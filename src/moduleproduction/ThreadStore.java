@@ -4,21 +4,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class ThreadWorking extends Thread{
+public class ThreadStore extends Thread{
 	
 	OutputStream output;
 	InputStream input;
 	
-	
-	public ThreadWorking(OutputStream target,InputStream source) {
+	public ThreadStore(OutputStream target, InputStream source) {
 		output = target;
 		input = source;
 	}
-	
+
 	@Override
 	public void run() {
 		super.run();
-		
 		while(true) {
 			try {
 				wait();
@@ -32,7 +30,5 @@ public class ThreadWorking extends Thread{
 				
 			}
 		}
-		
 	}
-	
 }
