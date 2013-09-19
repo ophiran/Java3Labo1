@@ -1,26 +1,20 @@
 package moduleproduction;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
 public class ThreadWorking extends Thread{
 	
-	PipedOutputStream output;
-	PipedInputStream input;
+	OutputStream output;
+	InputStream input;
 	
 	
-	public ThreadWorking(PipedOutputStream target) {
-		try {
-			input = new PipedInputStream(target);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		output = new PipedOutputStream();
-		//TODO send the ouputStream to StoreThread
-		
-		
+	public ThreadWorking(OutputStream target,InputStream source) {
+		output = target;
+		input = source;
 	}
 	
 	@Override
