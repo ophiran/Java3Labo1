@@ -1,4 +1,4 @@
-package moduleproduction;
+package moduleProduction;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +9,7 @@ public class ThreadStore extends Thread{
 	OutputStream output;
 	InputStream input;
 	
-	public ThreadStore(OutputStream target, InputStream source) {
+	public ThreadStore(InputStream source,OutputStream target) {
 		output = target;
 		input = source;
 	}

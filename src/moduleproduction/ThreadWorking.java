@@ -1,4 +1,4 @@
-package moduleproduction;
+package moduleProduction;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +10,7 @@ public class ThreadWorking extends Thread{
 	InputStream input;
 	
 	
-	public ThreadWorking(OutputStream target,InputStream source) {
+	public ThreadWorking(InputStream source,OutputStream target) {
 		output = target;
 		input = source;
 	}
