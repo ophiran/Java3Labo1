@@ -4,17 +4,18 @@
  */
 package moduleProduction;
 
-import bddDataObjects.Order;
-import bddDataObjects.PartsType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.text.DateFormat;
 import java.util.Date;
+
 import javax.swing.DefaultComboBoxModel;
+
+import bddDataObjects.Order;
+import bddDataObjects.PartsType;
 
 /**
  *
