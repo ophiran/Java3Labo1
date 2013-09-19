@@ -4,13 +4,16 @@
  */
 package moduleProduction;
 
+import bddDataObjects.Order;
 import bddDataObjects.PartsType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.text.DateFormat;
+import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -55,8 +58,13 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
             this.dispose();
         }
         else if(e.getSource().equals(orderButton)){
-            DataOutputStream dos = new DataOutputStream(posWindow);
-            dos.write(new );
+            try{
+                ObjectOutputStream oos = new ObjectOutputStream(posWindow);
+                oos.writeObject(new Order(0, new Date(), 0, (PartsType)comboBoxType.getSelectedItem(), Integer.parseInt(textFieldQuantity.getText())));
+            }
+            catch (IOException ioe){
+                
+            }
         }
     }
 
