@@ -33,7 +33,6 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
         
         PipedInputStream pisWorking, pisStore;
         PipedOutputStream posWorking;
-        ThreadOrder threadOrder;
         ThreadWorking threadWorking;
         ThreadStore threadStore;
         try{
