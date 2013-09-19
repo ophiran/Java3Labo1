@@ -16,14 +16,14 @@ public class ThreadStore extends Thread{
 
 	@Override
 	public void run() {
-		while(true) {
-			try {
-				if(input.available() != 0 ){
+	    while(true) {
+	        try {
+	            if(input.available() != 0 ){
 					
-				}
-			} catch(IOException ioe) {
+	            }
+	        } catch(IOException ioe) {
 				
-			}
-		}
+	        }
+	    }
 	}
 }
