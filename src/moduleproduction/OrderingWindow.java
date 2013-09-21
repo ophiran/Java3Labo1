@@ -24,6 +24,8 @@ import bddDataObjects.PartsType;
 public class OrderingWindow extends javax.swing.JFrame implements ActionListener{
 
     private PipedOutputStream posWindow;
+    ThreadWorking threadWorking;
+    ThreadStore threadStore;
     
     public OrderingWindow() {
         initComponents();
@@ -33,8 +35,7 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
         
         PipedInputStream pisWorking, pisStore;
         PipedOutputStream posWorking;
-        ThreadWorking threadWorking;
-        ThreadStore threadStore;
+        
         try{
             pisWorking = new PipedInputStream();
             pisStore = new PipedInputStream();
@@ -55,10 +56,13 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(quitButton)){
+            threadWorking.terminate();
+            threadStore.terminate();
             this.dispose();
         }
         else if(e.getSource().equals(orderButton)){
             try{
+                System.out.println("A new order has been sent");
                 ObjectOutputStream oos = new ObjectOutputStream(posWindow);
                 oos.writeObject(new Order(0, new Date(), 0, (PartsType)comboBoxType.getSelectedItem(), Integer.parseInt(textFieldQuantity.getText())));
             }
