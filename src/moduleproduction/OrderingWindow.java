@@ -4,6 +4,7 @@
  */
 package moduleProduction;
 
+import bddDataObjects.Client;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -16,6 +17,8 @@ import javax.swing.DefaultComboBoxModel;
 
 import bddDataObjects.Order;
 import bddDataObjects.PartsType;
+import java.util.Hashtable;
+
 
 /**
  *
@@ -26,6 +29,8 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
     private PipedOutputStream posWindow;
     ThreadWorking threadWorking;
     ThreadStore threadStore;
+    ThreadOrder threadOrder;
+    Hashtable<String, Client> ClientsList;
     
     public OrderingWindow() {
         initComponents();
@@ -33,17 +38,21 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
         quitButton.addActionListener(this);
         comboBoxType.setModel(new DefaultComboBoxModel(PartsType.values()));
         
-        PipedInputStream pisWorking, pisStore;
-        PipedOutputStream posWorking;
+        PipedInputStream pisWorking, pisStore, pisOrder;
+        PipedOutputStream posWorking, posOrder;
         
         try{
             pisWorking = new PipedInputStream();
             pisStore = new PipedInputStream();
+            pisOrder = new PipedInputStream();
+            posOrder = new PipedOutputStream(pisWorking);
             posWorking = new PipedOutputStream(pisStore);
-            posWindow = new PipedOutputStream(pisWorking);
+            posWindow = new PipedOutputStream(pisOrder);
             
+            threadOrder = new ThreadOrder(pisOrder, posOrder);
             threadWorking = new ThreadWorking(pisWorking, posWorking);
             threadStore = new ThreadStore(pisStore, System.out);
+            threadOrder.start();
             threadWorking.start();
             threadStore.start();
         }
@@ -58,13 +67,20 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
         if(e.getSource().equals(quitButton)){
             threadWorking.terminate();
             threadStore.terminate();
+            threadOrder.terminate();
             this.dispose();
         }
         else if(e.getSource().equals(orderButton)){
             try{
                 System.out.println("A new order has been sent");
                 ObjectOutputStream oos = new ObjectOutputStream(posWindow);
-                oos.writeObject(new Order(0, new Date(), 0, (PartsType)comboBoxType.getSelectedItem(), Integer.parseInt(textFieldQuantity.getText())));
+                if(!ClientsList.containsKey(textFieldClientName.getText())){
+                    Client newClient = new Client(textFieldClientName.getText());
+                    ClientsList.put(newClient.getName(), newClient);
+                }
+                
+                oos.writeObject(new Order(new Date(), ClientsList.get(textFieldClientName.getText()).getId(),
+                        (PartsType)comboBoxType.getSelectedItem(), Integer.parseInt(textFieldQuantity.getText())));
             }
             catch (IOException ioe){
                 
@@ -196,6 +212,7 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new OrderingWindow().setVisible(true);
             }

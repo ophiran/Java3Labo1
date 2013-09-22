@@ -13,9 +13,11 @@ public class Order implements Serializable{
     private int refClient;
     private PartsType partsType;
     private int quantity;
+    private static int orderNumber = 0;
     
-    public Order(int id, Date date, int refClient, PartsType partsType, int quantity){
-        this.id = id;
+    public Order(Date date, int refClient, PartsType partsType, int quantity){
+        orderNumber++;
+        this.id = orderNumber;
         this.date = date;
         this.refClient = refClient;
         this.partsType = partsType;
@@ -31,6 +33,7 @@ public class Order implements Serializable{
     }
     
     public void display(){
-        System.out.println(((Integer)quantity).toString() + "*" + partsType.toString());
+        System.out.println(((Integer)quantity).toString() + "*" + partsType.toString()
+                + " from client \"" + refClient + "\"" + " on " + date.toString());
     }
 }

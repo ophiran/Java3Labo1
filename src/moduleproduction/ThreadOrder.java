@@ -6,15 +6,16 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import static java.lang.Thread.sleep;
 
-public class ThreadWorking extends Thread{
+public class ThreadOrder extends Thread{
 	
 	private OutputStream output;
 	private InputStream input;
         private volatile boolean mustStop = false;
 	
 	
-	public ThreadWorking(InputStream source,OutputStream target) {
+	public ThreadOrder(InputStream source,OutputStream target) {
 		output = target;
 		input = source;
 	}
@@ -28,21 +29,15 @@ public class ThreadWorking extends Thread{
 	    while(!mustStop) {
                 try {
                     if(input.available() != 0 ){
-                        System.out.println("Working on a new piece");
+                        System.out.println("New order received");
                         ObjectOutputStream oos = new ObjectOutputStream(output);
                         ObjectInputStream ois = new ObjectInputStream(input);
-                        Order newOrder = (Order)ois.readObject();
-                        int workDuration = newOrder.getType().getBaseTime() * newOrder.getQuantity();
-                        System.out.println("Estimated duration : " + (double)workDuration / 1000 + " s");
-                        sleep(workDuration);
 
-                        oos.writeObject(newOrder);
+                        oos.writeObject(ois.readObject());
 
                     }
                 } catch(IOException ioe) {
-
-                } catch(InterruptedException ie){
-                    mustStop = true;
+                    
                 } catch(ClassNotFoundException cnfe){
 
                 }
