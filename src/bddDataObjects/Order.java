@@ -34,6 +34,6 @@ public class Order implements Serializable{
     
     public void display(){
         System.out.println(((Integer)quantity).toString() + "*" + partsType.toString()
-                + " from client \"" + refClient + "\"" + " on " + date.toString());
+                + " from client " + refClient + " on " + date.toString());
     }
 }

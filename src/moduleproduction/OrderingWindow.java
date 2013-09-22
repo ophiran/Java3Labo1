@@ -18,6 +18,7 @@ import javax.swing.DefaultComboBoxModel;
 import bddDataObjects.Order;
 import bddDataObjects.PartsType;
 import java.util.Hashtable;
+import java.util.Map;
 
 
 /**
@@ -30,10 +31,11 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
     ThreadWorking threadWorking;
     ThreadStore threadStore;
     ThreadOrder threadOrder;
-    Hashtable<String, Client> ClientsList;
+    Map<String, Client> ClientsList;
     
     public OrderingWindow() {
         initComponents();
+        ClientsList = new Hashtable<String, Client>();
         orderButton.addActionListener(this);
         quitButton.addActionListener(this);
         comboBoxType.setModel(new DefaultComboBoxModel(PartsType.values()));
