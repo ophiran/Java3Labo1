@@ -74,7 +74,6 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
         }
         else if(e.getSource().equals(orderButton)){
             try{
-                System.out.println("A new order has been sent");
                 ObjectOutputStream oos = new ObjectOutputStream(posWindow);
                 if(!ClientsList.containsKey(textFieldClientName.getText())){
                     Client newClient = new Client(textFieldClientName.getText());
@@ -83,6 +82,7 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
                 
                 oos.writeObject(new Order(new Date(), ClientsList.get(textFieldClientName.getText()).getId(),
                         (PartsType)comboBoxType.getSelectedItem(), Integer.parseInt(textFieldQuantity.getText())));
+                System.out.println("A new order has been sent");
             }
             catch (IOException ioe){
                 

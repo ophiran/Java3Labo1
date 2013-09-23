@@ -28,6 +28,7 @@ public class ThreadOrder extends Thread{
 	public void run() {
 	    while(!mustStop) {
                 try {
+                    sleep(500);
                     if(input.available() != 0 ){
                         System.out.println("New order received");
                         ObjectOutputStream oos = new ObjectOutputStream(output);
@@ -40,6 +41,8 @@ public class ThreadOrder extends Thread{
                     
                 } catch(ClassNotFoundException cnfe){
 
+                } catch(InterruptedException ie) {
+                    mustStop = true;
                 }
             }
 	}

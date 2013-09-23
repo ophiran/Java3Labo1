@@ -1,10 +1,10 @@
 package moduleProduction;
 
-import bddDataObjects.Order;
+import bddDataObjects.Production;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 public class ThreadStore extends Thread{
@@ -26,11 +26,13 @@ public class ThreadStore extends Thread{
 	public void run() {
 	    while(!mustStop) {
 	        try {
+                    sleep(500);
 	            if(input.available() != 0 ){
-                        ObjectOutputStream oos = new ObjectOutputStream(output);
+                        DataOutputStream dos = new DataOutputStream(output);
                         ObjectInputStream ois = new ObjectInputStream(input);
+                        
                         try{
-                            ((Order)ois.readObject()).display();
+                            dos.writeUTF(((Production)ois.readObject()).toString());
                         }
                         catch (ClassNotFoundException cnfe){
                             
@@ -39,7 +41,9 @@ public class ThreadStore extends Thread{
 	            }
 	        } catch(IOException ioe) {
 				
-	        }
+	        } catch(InterruptedException ie) {
+                    mustStop = true;
+                }
 	    }
 	}
 }
