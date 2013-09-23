@@ -12,7 +12,7 @@ public class testBean {
        BeanBDAccessMysql bean = new BeanBDAccessMysql();
        
        try {
-        bean.startConnection("//127.0.0.1/mydb");
+        bean.startConnection("//127.0.0.1:3306/sakila?profileSQL=true");
     } catch (SQLException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();

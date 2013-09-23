@@ -6,16 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+
 public class BeanBDAccessMysql {
 
     private Connection connection;
     
     public BeanBDAccessMysql() {
-        
     }
     
     public void startConnection(String dbPath) throws SQLException {
-        connection = DriverManager.getConnection("jdbc:mm.mysql:" + dbPath,"","");
+        connection = DriverManager.getConnection("jdbc:mysql:" + dbPath,"","");
     }
     
     public void stopConnection() throws SQLException {
