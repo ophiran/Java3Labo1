@@ -1,6 +1,6 @@
 import java.sql.SQLException;
 
-import bddAccessObjects.BeanBDAccessMysql;
+import bddAccessObjects.BeanBDAccessCSV;
 
 
 public class testBean {
@@ -12,14 +12,20 @@ public class testBean {
        
        
         try {
-            BeanBDAccessMysql bean = new BeanBDAccessMysql();
-            bean.startConnection("//127.0.0.1:3306/sakila?profileSQL=true");
+            BeanBDAccessCSV bean = new BeanBDAccessCSV();
+            bean.startConnection("/127.0.0.1:3306/mydb");
+            Thread.sleep(2000);
+            bean.stopConnection();
+            
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClassNotFoundException cnfe){
            
+        } catch (InterruptedException ie) {
+            
         }
+        
 
     }
 
