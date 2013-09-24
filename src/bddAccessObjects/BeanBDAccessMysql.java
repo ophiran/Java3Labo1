@@ -11,11 +11,16 @@ public class BeanBDAccessMysql {
 
     private Connection connection;
     
-    public BeanBDAccessMysql() {
+    public BeanBDAccessMysql() throws ClassNotFoundException {
+        Class demo = Class.forName("com.mysql.jdbc.Driver");
     }
     
     public void startConnection(String dbPath) throws SQLException {
         connection = DriverManager.getConnection("jdbc:mysql:" + dbPath,"","");
+    }
+    
+    public void startConnection(String dbPath, String user, String password) throws SQLException {
+        connection = DriverManager.getConnection("jdbc:mysql:" + dbPath,user,password);
     }
     
     public void stopConnection() throws SQLException {
