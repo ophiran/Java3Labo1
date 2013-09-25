@@ -67,9 +67,11 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(quitButton)){
+            
             threadWorking.terminate();
             threadStore.terminate();
             threadOrder.terminate();
+            
             this.dispose();
         }
         else if(e.getSource().equals(orderButton)){

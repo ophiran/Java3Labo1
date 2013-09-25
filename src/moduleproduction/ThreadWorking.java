@@ -30,11 +30,11 @@ public class ThreadWorking extends Thread{
     public void run() {
         while(!mustStop) {
             try {
-                System.out.println("Working on a new set of parts");
+                
                 ObjectOutputStream oos = new ObjectOutputStream(output);
                 ObjectInputStream ois = new ObjectInputStream(input);
                 Order newOrder = (Order)ois.readObject();
-
+                System.out.println("Working on a new set of parts");
                 Production newProduction = new Production(new Date(),newOrder.getType(), newOrder.getQuantity());
                 for(int i = 0; i < newOrder.getQuantity(); i++){
                     System.out.println("Estimated time : " + newOrder.getType().getBaseTime()/1000 + "s");

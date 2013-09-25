@@ -28,11 +28,12 @@ public class ThreadOrder extends Thread{
     public void run() {
         while(!mustStop) {
             try {
-                System.out.println("New order received");
+                
                 ObjectOutputStream oos = new ObjectOutputStream(output);
                 ObjectInputStream ois = new ObjectInputStream(input);
 
                 oos.writeObject(ois.readObject());
+                System.out.println("New order received");
             } catch(IOException ioe) {
 
             } catch(ClassNotFoundException cnfe){

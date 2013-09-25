@@ -34,7 +34,7 @@ public class ThreadStore extends Thread{
                 try{
                     bw.write(((Production)ois.readObject()).toString());
                     bw.newLine();
-                    bw.close();
+                    bw.flush();
                 } catch (ClassNotFoundException cnfe){
 
                 }
