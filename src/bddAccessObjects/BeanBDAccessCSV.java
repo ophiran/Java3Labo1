@@ -14,16 +14,16 @@ private Connection connection;
         Class demo = Class.forName("org.relique.jdbc.csv.CsvDriver");
     }
     
-    public void startConnection(String dbPath) throws SQLException {
+    public synchronized void startConnection(String dbPath) throws SQLException {
         connection = DriverManager.getConnection("jdbc:relique:csv:" + dbPath);
     }
     
-    public void stopConnection() throws SQLException {
+    public synchronized void stopConnection() throws SQLException {
         if(connection != null)
             connection.close();
     }
     
-    public ResultSet sendQuery(String query) throws SQLException {
+    public synchronized ResultSet sendQuery(String query) throws SQLException {
         Statement instruction = connection.createStatement();
         return instruction.executeQuery(query);
     }

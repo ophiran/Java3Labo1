@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class OrderingWindow extends javax.swing.JFrame implements ActionListener{
 
-    private PipedOutputStream posWindow, posWorking, posOrder;
+    private PipedOutputStream posWindow;
     ThreadWorking threadWorking;
     ThreadStore threadStore;
     ThreadOrder threadOrder;
@@ -41,6 +41,7 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
         comboBoxType.setModel(new DefaultComboBoxModel(PartsType.values()));
         
         PipedInputStream pisWorking, pisStore, pisOrder;
+        PipedOutputStream posWorking, posOrder;
         
         try{
             pisWorking = new PipedInputStream();
@@ -67,16 +68,11 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(quitButton)){
             
+            
+            
             threadWorking.terminate();
             threadStore.terminate();
             threadOrder.terminate();
-            try{
-                posWindow.close();
-                posWorking.close();
-                posOrder.close();
-            } catch (IOException ioe){
-                
-            }
             
             
             this.dispose();

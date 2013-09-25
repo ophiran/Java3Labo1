@@ -15,20 +15,20 @@ public class BeanBDAccessMysql {
         Class demo = Class.forName("com.mysql.jdbc.Driver");
     }
     
-    public void startConnection(String dbPath) throws SQLException {
+    public synchronized void startConnection(String dbPath) throws SQLException {
         connection = DriverManager.getConnection("jdbc:mysql:" + dbPath,"","");
     }
     
-    public void startConnection(String dbPath, String user, String password) throws SQLException {
+    public synchronized void startConnection(String dbPath, String user, String password) throws SQLException {
         connection = DriverManager.getConnection("jdbc:mysql:" + dbPath,user,password);
     }
     
-    public void stopConnection() throws SQLException {
+    public synchronized void stopConnection() throws SQLException {
         if(connection != null)
             connection.close();
     }
     
-    public ResultSet sendQuery(String query) throws SQLException {
+    public synchronized ResultSet sendQuery(String query) throws SQLException {
         Statement instruction = connection.createStatement();
         return instruction.executeQuery(query);
     }
