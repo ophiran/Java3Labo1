@@ -10,41 +10,35 @@ import static java.lang.Thread.sleep;
 
 public class ThreadOrder extends Thread{
 	
-	private OutputStream output;
-	private InputStream input;
-        private volatile boolean mustStop = false;
-	
-	
-	public ThreadOrder(InputStream source,OutputStream target) {
-		output = target;
-		input = source;
-	}
-        
-        public void terminate(){
-            mustStop = true;
-        }
-                
-	@Override
-	public void run() {
-	    while(!mustStop) {
-                try {
-                    sleep(500);
-                    if(input.available() != 0 ){
-                        System.out.println("New order received");
-                        ObjectOutputStream oos = new ObjectOutputStream(output);
-                        ObjectInputStream ois = new ObjectInputStream(input);
+    private OutputStream output;
+    private InputStream input;
+    private volatile boolean mustStop = false;
 
-                        oos.writeObject(ois.readObject());
 
-                    }
-                } catch(IOException ioe) {
-                    
-                } catch(ClassNotFoundException cnfe){
+    public ThreadOrder(InputStream source,OutputStream target) {
+        output = target;
+        input = source;
+    }
 
-                } catch(InterruptedException ie) {
-                    mustStop = true;
-                }
+    public void terminate(){
+        mustStop = true;
+    }
+
+    @Override
+    public void run() {
+        while(!mustStop) {
+            try {
+                System.out.println("New order received");
+                ObjectOutputStream oos = new ObjectOutputStream(output);
+                ObjectInputStream ois = new ObjectInputStream(input);
+
+                oos.writeObject(ois.readObject());
+            } catch(IOException ioe) {
+
+            } catch(ClassNotFoundException cnfe){
+
             }
-	}
+        }
+    }
 	
 }

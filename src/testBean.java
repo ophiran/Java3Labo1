@@ -14,17 +14,19 @@ public class testBean {
        
        System.out.println("Trying to connect...");
         try {
-            /*
+            
             BeanBDAccessMysql bean = new BeanBDAccessMysql();
             bean.startConnection("//127.0.0.1:3306/mydb", "root", "");
             System.out.println("Connection established");
-            ResultSet rs = bean.sendQuery("select * from parts");
+            ResultSet rs = bean.sendQuery("select count(*) from parts");
             while(rs.next()){
-                System.out.println(((Integer)rs.getInt("FabricationTime")).toString());
+                //System.out.println(((Integer)rs.getInt("fabricationTime")).toString());
+                System.out.println(rs.getInt("count(*)"));
             }
             bean.stopConnection();
             System.out.println("Deconnected");
-            */
+            
+            /*
             BeanBDAccessCSV bean = new BeanBDAccessCSV();
             bean.startConnection("c:\\mydb");
             System.out.println("Connection established");
@@ -34,6 +36,7 @@ public class testBean {
             }
             bean.stopConnection();
             System.out.println("Deconnected");
+            */
             
         } catch (SQLException e) {
             // TODO Auto-generated catch block
