@@ -30,7 +30,8 @@ public class ThreadStore extends Thread{
             try {
                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(output));
                 ObjectInputStream ois = new ObjectInputStream(input);
-
+                
+                
                 try{
                     bw.write(((Production)ois.readObject()).toString());
                     bw.newLine();
