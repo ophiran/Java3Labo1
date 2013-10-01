@@ -11,7 +11,7 @@ public class BeanBDAccessCSV {
 private Connection connection;
     
     public BeanBDAccessCSV() throws ClassNotFoundException {
-        Class demo = Class.forName("org.relique.jdbc.csv.CsvDriver");
+        Class.forName("org.relique.jdbc.csv.CsvDriver");
     }
     
     public synchronized void startConnection(String dbPath) throws SQLException {

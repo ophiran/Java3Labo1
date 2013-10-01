@@ -12,7 +12,7 @@ public class BeanBDAccessMysql {
     private Connection connection;
     
     public BeanBDAccessMysql() throws ClassNotFoundException {
-        Class demo = Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.jdbc.Driver");
     }
     
     public synchronized void startConnection(String dbPath) throws SQLException {
