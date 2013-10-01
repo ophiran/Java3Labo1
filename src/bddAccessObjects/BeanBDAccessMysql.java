@@ -33,6 +33,10 @@ public class BeanBDAccessMysql {
         return instruction.executeQuery(query);
     }
     
-    
+    @Override
+    protected void finalize() throws Throwable {
+        if(connection != null) connection.close();
+        super.finalize();
+    }
     
 }

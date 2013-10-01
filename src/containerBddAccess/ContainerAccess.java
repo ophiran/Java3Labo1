@@ -7,6 +7,7 @@ import java.text.RuleBasedCollator;
 import bddAccessObjects.BeanBDAccessMysql;
 import bddDataObjects.Part;
 import bddDataObjects.PartsType;
+import bddDataObjects.Production;
 
 public class ContainerAccess{
     
@@ -33,6 +34,14 @@ public class ContainerAccess{
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public void sendProductionInfo(Production production){
+        try {
+            ResultSet rs = beanAccess.sendQuery("");
+        } catch (SQLException e) {
+            
+        }
     }
     
     
