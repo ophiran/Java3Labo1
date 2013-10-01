@@ -15,7 +15,7 @@ public class ContainerAccess{
     public ContainerAccess() {
         try {
             beanAccess = new BeanBDAccessMysql();
-            beanAccess.startConnection("//127.0.0.1:3306/mydb", "root", "");
+            beanAccess.startConnection("//127.0.0.1:3306/mydb", "root", "root");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -25,7 +25,7 @@ public class ContainerAccess{
     
     public Part getInfoParts(PartsType type) {
         try {
-            ResultSet rs = beanAccess.sendQuery("select * from parts where label = " + type.getType() + "");
+            ResultSet rs = beanAccess.sendQuery("select * from parts where label = '" + type.getType() + "'");
             rs.next();
             
             return new Part(type, rs.getInt("fabricationTime"), rs.getString("dimensions"), rs.getFloat("productionCost"));

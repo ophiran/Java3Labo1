@@ -2,7 +2,10 @@ import java.sql.SQLException;
 
 import bddAccessObjects.BeanBDAccessCSV;
 import bddAccessObjects.BeanBDAccessMysql;
+
 import java.sql.ResultSet;
+
+import containerBddAccess.ContainerAccess;
 
 
 public class testBean {
@@ -16,7 +19,7 @@ public class testBean {
         try {
             
             BeanBDAccessMysql bean = new BeanBDAccessMysql();
-            bean.startConnection("//127.0.0.1:3306/mydb", "root", "");
+            bean.startConnection("//127.0.0.1:3306/mydb", "root", "root");
             System.out.println("Connection established");
             ResultSet rs = bean.sendQuery("select count(*) from parts");
             while(rs.next()){
@@ -25,6 +28,7 @@ public class testBean {
             }
             bean.stopConnection();
             System.out.println("Deconnected");
+
             
             /*
             BeanBDAccessCSV bean = new BeanBDAccessCSV();

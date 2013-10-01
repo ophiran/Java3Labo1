@@ -11,15 +11,15 @@ import java.awt.List;
  * @author mike
  */
 public enum PartsType {
-    L("l",2000), 
-    T("t",5000), 
-    U("u",2700), 
-    X2("x2",3354), 
-    X3("x3",1457), 
-    C2("c2",2114), 
-    C3("c3",4521), 
-    C4("c4",4122),
-    T2("t2",4525);
+    L("L",2000), 
+    T("T",5000), 
+    U("U",2700), 
+    X2("X2",3354), 
+    X3("X3",1457), 
+    C2("C2",2114), 
+    C3("C3",4521), 
+    C4("C4",4122),
+    T2("T2",4525);
     
     private String type;
     private int baseTime;
