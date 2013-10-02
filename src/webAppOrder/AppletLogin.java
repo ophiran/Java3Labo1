@@ -85,7 +85,7 @@ public class AppletLogin extends javax.swing.JApplet implements ActionListener {
         registerButton.setText("I don't have a password yet");
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel3.setText("Welcome on MetalBuilding's website ");
+        jLabel3.setText("Welcome to MetalBuildings ");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
