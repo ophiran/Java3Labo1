@@ -11,6 +11,7 @@ package bddDataObjects;
 public class Client {
     private String name;
     private int id;
+    private String password;
     private static int clientNumber = 0;
 
     
@@ -22,9 +23,10 @@ public class Client {
         return this.name;
     }
     
-    public Client(String name){
+    public Client(String name, String password){
         clientNumber++;
         this.name = name;
+        this.password = password;
         this.id = clientNumber;
     }
 }

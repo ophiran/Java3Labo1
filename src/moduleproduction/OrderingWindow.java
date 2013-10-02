@@ -81,7 +81,7 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
             try{
                 ObjectOutputStream oos = new ObjectOutputStream(posWindow);
                 if(!ClientsList.containsKey(textFieldClientName.getText())){
-                    Client newClient = new Client(textFieldClientName.getText());
+                    Client newClient = new Client(textFieldClientName.getText(), "");
                     ClientsList.put(newClient.getName(), newClient);
                 }
                 
