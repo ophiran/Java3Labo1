@@ -19,7 +19,7 @@ public class ThreadWorking extends Thread{
     private InputStream input;
     private ContainerAccess accessContainer;
     private volatile boolean mustStop = false;
-    private double defectivePercentage = 0.01;
+    private double defectivePercentage = 0.21;
 
 
     public ThreadWorking(InputStream source,OutputStream target) {

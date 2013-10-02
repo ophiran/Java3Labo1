@@ -13,7 +13,6 @@ public class Production implements Serializable{
     private PartsType partsType;
     private Integer quantity;
     private Integer defectivePartsQuantity;
-    private static int numberProduction = 0;
     
     public void addDefectPart(){
         if (this.defectivePartsQuantity < this.quantity){
@@ -29,11 +28,21 @@ public class Production implements Serializable{
         
     public Production(Date date, PartsType partsType,
             int quantity){
-        this.numberProduction++;
-        this.id = numberProduction;
         this.date = date;
         this.partsType = partsType;
         this.quantity = quantity;
         this.defectivePartsQuantity = 0;
+    }
+    
+    public int getQuantity() {
+        return quantity;
+    }
+    
+    public int getDefectivePartsQuantity() {
+        return defectivePartsQuantity;
+    }
+    
+    public String getIdParts() {
+        return partsType.getType();
     }
 }

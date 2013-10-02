@@ -16,7 +16,7 @@ public class ContainerAccess{
     public ContainerAccess() {
         try {
             beanAccess = new BeanBDAccessMysql();
-            beanAccess.startConnection("//127.0.0.1:3306/mydb", "root", "root");
+            beanAccess.startConnection("//127.0.0.1:3306/mydb", "root", "");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -38,9 +38,14 @@ public class ContainerAccess{
     
     public void sendProductionInfo(Production production){
         try {
-            ResultSet rs = beanAccess.sendQuery("");
+            int prodId;
+            ResultSet rs = beanAccess.sendQuery("SELECT MAX(idProductions) FROM production");
+            rs.next();
+            prodId = rs.getInt(1) + 1;
+            beanAccess.insertRow("INSERT INTO production VALUES (" + prodId + ",'" +
+            production.getIdParts() + "'," + production.getQuantity() + "," + production.getDefectivePartsQuantity() + ")");
         } catch (SQLException e) {
-            
+            e.printStackTrace();
         }
     }
     

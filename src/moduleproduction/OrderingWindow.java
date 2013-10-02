@@ -53,7 +53,7 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
             
             threadOrder = new ThreadOrder(pisOrder, posOrder);
             threadWorking = new ThreadWorking(pisWorking, posWorking);
-            threadStore = new ThreadStore(pisStore, System.out);
+            threadStore = new ThreadStore(pisStore);
             threadOrder.start();
             threadWorking.start();
             threadStore.start();

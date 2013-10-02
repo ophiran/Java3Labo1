@@ -33,6 +33,11 @@ public class BeanBDAccessMysql {
         return instruction.executeQuery(query);
     }
     
+    public synchronized void insertRow(String query) throws SQLException {
+        Statement instruction = connection.createStatement();
+        instruction.executeUpdate(query);
+    }
+    
     @Override
     protected void finalize() throws Throwable {
         if(connection != null) connection.close();

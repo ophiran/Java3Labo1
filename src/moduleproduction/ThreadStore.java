@@ -1,6 +1,7 @@
 package moduleProduction;
 
 import bddDataObjects.Production;
+
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,15 +10,17 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import containerBddAccess.ContainerAccess;
+
 public class ThreadStore extends Thread{
 	
-    private OutputStream output;
     private InputStream input;
+    private ContainerAccess accessContainer;
     private volatile boolean mustStop = false;
 
-    public ThreadStore(InputStream source,OutputStream target) {
-        output = target;
+    public ThreadStore(InputStream source) {
         input = source;
+        accessContainer = new ContainerAccess();
     }
 
     public void terminate(){
@@ -28,18 +31,15 @@ public class ThreadStore extends Thread{
     public void run() {
         while(!mustStop) {
             try {
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(output));
                 ObjectInputStream ois = new ObjectInputStream(input);
+                Production product = (Production)ois.readObject();
+                System.out.println("Storing a production in BD");
+                accessContainer.sendProductionInfo(product);
+                System.out.println("Finished storing");
                 
-                
-                try{
-                    bw.write(((Production)ois.readObject()).toString());
-                    bw.newLine();
-                    bw.flush();
-                } catch (ClassNotFoundException cnfe){
-
-                }
             } catch (IOException ioe) {
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }
