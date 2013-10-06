@@ -1,10 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package moduleProduction;
 
-import bddDataObjects.Client;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -15,8 +10,10 @@ import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 
-import bddDataObjects.Order;
-import bddDataObjects.PartsType;
+import dbDataObjects.Client;
+import dbDataObjects.Order;
+import dbDataObjects.PartsType;
+
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -81,13 +78,13 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
             try{
                 ObjectOutputStream oos = new ObjectOutputStream(posWindow);
                 if(!ClientsList.containsKey(textFieldClientName.getText())){
-                    Client newClient = new Client(textFieldClientName.getText(), "");
-                    ClientsList.put(newClient.getName(), newClient);
+                    Client newClient = new Client(textFieldClientName.getText());
+                    if (newClient.isAuthorized()) {
+                    	oos.writeObject(new Order(new Date(), newClient.getId(),
+                                (PartsType)comboBoxType.getSelectedItem(), Integer.parseInt(textFieldQuantity.getText())));
+                        System.out.println("A new order has been sent");
+                    }
                 }
-                
-                oos.writeObject(new Order(new Date(), ClientsList.get(textFieldClientName.getText()).getId(),
-                        (PartsType)comboBoxType.getSelectedItem(), Integer.parseInt(textFieldQuantity.getText())));
-                System.out.println("A new order has been sent");
             }
             catch (IOException ioe){
                 

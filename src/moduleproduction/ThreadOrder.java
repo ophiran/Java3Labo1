@@ -1,11 +1,12 @@
 package moduleProduction;
 
-import bddDataObjects.Order;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+
+import dbDataObjects.Order;
 import static java.lang.Thread.sleep;
 
 public class ThreadOrder extends Thread{

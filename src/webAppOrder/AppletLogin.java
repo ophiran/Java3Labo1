@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import bddDataObjects.Client;
+import dbDataObjects.Client;
 
 public class AppletLogin extends javax.swing.JApplet implements ActionListener {
 
@@ -52,12 +52,19 @@ public class AppletLogin extends javax.swing.JApplet implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(enterButton)){
 			Client loggerClient = new Client(nameTextField.getText(), passTextField.getText());
+			// TODO send loggerClient to servlet where loggerClient.isAuthorized is executed then
+			// servlet send boolean to this
 			try {
-				getAppletContext().showDocument(new URL("http://localhost:80//welcome.html"));
-			} catch (MalformedURLException e1) {
-				e1.printStackTrace();
+				if (false) {
+					System.out.println("TEST");
+					getAppletContext().showDocument(new URL("http://localhost:80//welcome.html"));
+					
+				} else {
+					getAppletContext().showDocument(new URL("http://localhost:80//errorLogin.html"));
+				}
+			} catch (MalformedURLException me) {
+				me.printStackTrace();
 			}
-			
 		}
 		
 	}

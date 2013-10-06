@@ -1,11 +1,9 @@
 import java.sql.SQLException;
-
-import bddAccessObjects.BeanBDAccessCSV;
-import bddAccessObjects.BeanBDAccessMysql;
-
 import java.sql.ResultSet;
 
-import containerBddAccess.ContainerAccess;
+import containerDbAccess.ContainerAccess;
+import dbAccessObjects.CSVDbAccess;
+import dbAccessObjects.MysqlDbAccess;
 
 
 public class testBean {
@@ -18,7 +16,7 @@ public class testBean {
        System.out.println("Trying to connect...");
         try {
             
-            BeanBDAccessMysql bean = new BeanBDAccessMysql();
+            MysqlDbAccess bean = new MysqlDbAccess();
             bean.startConnection("//127.0.0.1:3306/mydb", "root", "root");
             System.out.println("Connection established");
             ResultSet rs = bean.sendQuery("select count(*) from parts");

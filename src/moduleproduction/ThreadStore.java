@@ -1,7 +1,5 @@
 package moduleProduction;
 
-import bddDataObjects.Production;
-
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,7 +8,8 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import containerBddAccess.ContainerAccess;
+import containerDbAccess.ContainerAccess;
+import dbDataObjects.Production;
 
 public class ThreadStore extends Thread{
 	
@@ -20,7 +19,7 @@ public class ThreadStore extends Thread{
 
     public ThreadStore(InputStream source) {
         input = source;
-        accessContainer = new ContainerAccess();
+        accessContainer = ContainerAccess.getInstance();
     }
 
     public void terminate(){
@@ -33,7 +32,7 @@ public class ThreadStore extends Thread{
             try {
                 ObjectInputStream ois = new ObjectInputStream(input);
                 Production product = (Production)ois.readObject();
-                System.out.println("Storing a production in BD");
+                System.out.println("Storing a production in DB");
                 accessContainer.sendProductionInfo(product);
                 System.out.println("Finished storing");
                 
