@@ -2,8 +2,8 @@ package containerDbAccess;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import dbAccessObjects.MysqlDbAccess;
 import dbDataObjects.Client;
@@ -61,12 +61,29 @@ public class ContainerAccess{
         }
     }
     
-    public synchronized Set<String> getClients() {
+    public synchronized Set<String> getClientsLogin() {
     	try {
-    		Set<String> clientsList = new HashSet<String>(); 
+    		Set<String> clientsList = new TreeSet<String>(); 
     		ResultSet rs = beanAccess.sendQuery("SELECT login FROM Clients");
     		while(rs.next()) {
     			clientsList.add(rs.getString("login"));
+    		}
+    		return clientsList;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		return null;
+    	}
+    }
+    
+    public synchronized Set<Client> getClients() {
+    	try {
+    		Set<Client> clientsList = new TreeSet<Client>(); 
+    		ResultSet rs = beanAccess.sendQuery("SELECT * FROM Clients");
+    		while(rs.next()) {
+    			Client currentClient = new Client(rs.getString("lastName"), rs.getString("firstName"), 
+    								rs.getString("login"), rs.getString("password"), rs.getString("address"), 
+    								rs.getString("phoneNumber"), rs.getString("email"));
+    			clientsList.add(currentClient);
     		}
     		return clientsList;
     	} catch (SQLException e) {

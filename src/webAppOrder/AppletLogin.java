@@ -2,8 +2,14 @@ package webAppOrder;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 
 import dbDataObjects.Client;
 
@@ -51,9 +57,39 @@ public class AppletLogin extends javax.swing.JApplet implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(enterButton)){
-			Client loggerClient = new Client(nameTextField.getText(), passTextField.getText());
+
 			// TODO send loggerClient to servlet where loggerClient.isAuthorized is executed then
 			// servlet send boolean to this
+			try {
+				URL currentPage = getDocumentBase();
+				String protocol = currentPage.getProtocol();
+				String host = currentPage.getHost();
+				int port = currentPage.getPort();
+				String servletAddress = "/loginServlet";
+				URL servletUrl = new URL(protocol, host, port, servletAddress);
+				
+				URLConnection connection = servletUrl.openConnection();
+				connection.setUseCaches(false);
+				connection.setDefaultUseCaches(false);
+				connection.setDoOutput(true);
+				
+				ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
+				PrintWriter pw = new PrintWriter(baos, true);
+				
+				String toSend = "name=" + URLEncoder.encode(nameTextField.getText())
+								+ "&password=" + URLEncoder.encode(passTextField.getText());
+				pw.print(toSend);
+				pw.flush();
+				
+				String sentLength = String.valueOf(baos.size());
+				connection.setRequestProperty("Content-Length", sentLength);
+				connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+				baos.writeTo(connection.getOutputStream());
+				
+				
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
 			try {
 				if (false) {
 					System.out.println("TEST");

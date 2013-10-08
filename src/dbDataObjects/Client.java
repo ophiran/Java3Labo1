@@ -38,7 +38,7 @@ public class Client {
     
     public boolean isAuthorized() {
     	ContainerAccess db = ContainerAccess.getInstance();
-    	Set<String> clientLists = db.getClients();
+    	Set<String> clientLists = db.getClientsLogin();
     	if (clientLists.contains(this.login)) {
     		return true;
     	} else {
