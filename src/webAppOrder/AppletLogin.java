@@ -60,6 +60,7 @@ public class AppletLogin extends javax.swing.JApplet implements ActionListener {
 			
 		}
 		
+		
 	}
 	
     @SuppressWarnings("unchecked")
