@@ -1,6 +1,6 @@
 package moduleProduction;
 
-import bddDataObjects.Production;
+import dbDataObjects.Production;
 
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
@@ -10,7 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import containerBddAccess.ContainerAccess;
+import containerDbAccess.ContainerAccess;
 
 public class ThreadStore extends Thread{
 	
@@ -20,7 +20,7 @@ public class ThreadStore extends Thread{
 
     public ThreadStore(InputStream source) {
         input = source;
-        accessContainer = new ContainerAccess();
+        accessContainer = ContainerAccess.getInstance();
     }
 
     public void terminate(){

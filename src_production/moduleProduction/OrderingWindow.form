@@ -37,7 +37,7 @@
                               </Group>
                               <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="textFieldClientName" pref="191" max="32767" attributes="0"/>
+                                  <Component id="clientLoginTf" pref="191" max="32767" attributes="0"/>
                                   <Component id="comboBoxType" max="32767" attributes="0"/>
                                   <Component id="textFieldQuantity" alignment="0" min="-2" pref="50" max="-2" attributes="0"/>
                               </Group>
@@ -65,7 +65,7 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="labelClientName" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="textFieldClientName" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="clientLoginTf" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -90,7 +90,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="labelClientName">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Client name"/>
+        <Property name="text" type="java.lang.String" value="Login"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="labelPartType">
@@ -103,10 +103,7 @@
         <Property name="text" type="java.lang.String" value="Quantity"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="textFieldClientName">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Your name"/>
-      </Properties>
+    <Component class="javax.swing.JTextField" name="clientLoginTf">
     </Component>
     <Component class="javax.swing.JComboBox" name="comboBoxType">
       <Properties>

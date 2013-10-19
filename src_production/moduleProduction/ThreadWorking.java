@@ -1,8 +1,8 @@
 package moduleProduction;
 
-import bddDataObjects.Order;
-import bddDataObjects.Part;
-import bddDataObjects.Production;
+import dbDataObjects.Order;
+import dbDataObjects.Part;
+import dbDataObjects.Production;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +11,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
-import containerBddAccess.ContainerAccess;
+import containerDbAccess.ContainerAccess;
 
 public class ThreadWorking extends Thread{
 	
@@ -25,7 +25,7 @@ public class ThreadWorking extends Thread{
     public ThreadWorking(InputStream source,OutputStream target) {
         output = target;
         input = source;
-        accessContainer = new ContainerAccess();
+        accessContainer = ContainerAccess.getInstance();
     }
 
     public void terminate(){

@@ -75,17 +75,16 @@ public class ContainerAccess{
     	}
     }
     
-    public synchronized Set<Client> getClients() {
+    public synchronized Client getClient(String login) {
     	try {
-    		Set<Client> clientsList = new TreeSet<Client>(); 
-    		ResultSet rs = beanAccess.sendQuery("SELECT * FROM Clients");
-    		while(rs.next()) {
-    			Client currentClient = new Client(rs.getString("lastName"), rs.getString("firstName"), 
+    		ResultSet rs = beanAccess.sendQuery("SELECT * FROM Clients WHERE login='" + login + "'");
+                Client client = null;
+    		if(rs.next()) {
+    			client = new Client(rs.getString("lastName"), rs.getString("firstName"), 
     								rs.getString("login"), rs.getString("password"), rs.getString("address"), 
     								rs.getString("phoneNumber"), rs.getString("email"));
-    			clientsList.add(currentClient);
     		}
-    		return clientsList;
+    		return client;
     	} catch (SQLException e) {
     		e.printStackTrace();
     		return null;

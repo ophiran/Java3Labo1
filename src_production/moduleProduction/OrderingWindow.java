@@ -4,7 +4,8 @@
  */
 package moduleProduction;
 
-import bddDataObjects.Client;
+import containerDbAccess.ContainerAccess;
+import dbDataObjects.Client;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -15,10 +16,12 @@ import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 
-import bddDataObjects.Order;
-import bddDataObjects.PartsType;
+import dbDataObjects.Order;
+import dbDataObjects.PartsType;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.TreeSet;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -31,11 +34,9 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
     ThreadWorking threadWorking;
     ThreadStore threadStore;
     ThreadOrder threadOrder;
-    Map<String, Client> ClientsList;
     
     public OrderingWindow() {
         initComponents();
-        ClientsList = new Hashtable<String, Client>();
         orderButton.addActionListener(this);
         quitButton.addActionListener(this);
         comboBoxType.setModel(new DefaultComboBoxModel(PartsType.values()));
@@ -79,15 +80,20 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
         }
         else if(e.getSource().equals(orderButton)){
             try{
+                ContainerAccess db = ContainerAccess.getInstance();
+                TreeSet<String> clientsList = db.getClientsLogin();
                 ObjectOutputStream oos = new ObjectOutputStream(posWindow);
-                if(!ClientsList.containsKey(textFieldClientName.getText())){
-                    Client newClient = new Client(textFieldClientName.getText(), "");
-                    ClientsList.put(newClient.getName(), newClient);
+                if(clientsList.contains(clientLoginTf.getText())){
+                    Client customer = db.getClient(clientLoginTf.getText());
+                    oos.writeObject(new Order(new Date(), customer.getId(),
+                        (PartsType)comboBoxType.getSelectedItem(), Integer.parseInt(textFieldQuantity.getText())));
+                    System.out.println("A new order has been sent");
+
+                } else {
+                    JOptionPane.showMessageDialog(this, "Unknown client, please register via the web application");
                 }
                 
-                oos.writeObject(new Order(new Date(), ClientsList.get(textFieldClientName.getText()).getId(),
-                        (PartsType)comboBoxType.getSelectedItem(), Integer.parseInt(textFieldQuantity.getText())));
-                System.out.println("A new order has been sent");
+                
             }
             catch (IOException ioe){
                 
@@ -107,7 +113,7 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
         labelClientName = new javax.swing.JLabel();
         labelPartType = new javax.swing.JLabel();
         labelQuantity = new javax.swing.JLabel();
-        textFieldClientName = new javax.swing.JTextField();
+        clientLoginTf = new javax.swing.JTextField();
         comboBoxType = new javax.swing.JComboBox();
         textFieldQuantity = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -116,13 +122,11 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        labelClientName.setText("Client name");
+        labelClientName.setText("Login");
 
         labelPartType.setText("Part type");
 
         labelQuantity.setText("Quantity");
-
-        textFieldClientName.setText("Your name");
 
         comboBoxType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -152,7 +156,7 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
                                     .addComponent(labelQuantity))
                                 .addGap(45, 45, 45)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(textFieldClientName, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                                    .addComponent(clientLoginTf, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
                                     .addComponent(comboBoxType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(textFieldQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -171,7 +175,7 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelClientName)
-                    .addComponent(textFieldClientName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(clientLoginTf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(comboBoxType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -226,6 +230,7 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField clientLoginTf;
     private javax.swing.JComboBox comboBoxType;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel labelClientName;
@@ -233,7 +238,6 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
     private javax.swing.JLabel labelQuantity;
     private javax.swing.JButton orderButton;
     private javax.swing.JButton quitButton;
-    private javax.swing.JTextField textFieldClientName;
     private javax.swing.JTextField textFieldQuantity;
     // End of variables declaration//GEN-END:variables
 
