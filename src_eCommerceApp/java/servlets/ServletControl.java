@@ -86,9 +86,13 @@ public class ServletControl extends HttpServlet {
             try {
                 TreeMap<String, Integer> cart = (TreeMap<String, Integer>) session.getAttribute("cart");
                 if(cart != null) {
+                    java.sql.Date nowDate = new java.sql.Date(new java.util.Date().getTime());
                     MysqlDbAccess beanAccess = new MysqlDbAccess();
                     beanAccess.startConnection("//127.0.0.1:3306/mydb", "root", "");
                     ResultSet rs = beanAccess.sendQuery("SELECT MAX(idOrders) FROM orders");
+                    ResultSet rsClientId = beanAccess.sendQuery("SELECT idClients FROM clients WHERE login='" + session.getAttribute("login.isDone") + "'");
+                    rsClientId.next();
+                    int refClient = rsClientId.getInt("idClients");
                     int id;
                     if(rs.next()) {
                         id = rs.getInt("MAX(idOrders)");
@@ -98,9 +102,9 @@ public class ServletControl extends HttpServlet {
                     for(String s: cart.keySet()) {
                         if(cart.get(s) > 0) {
                             id++;
-                            beanAccess.updateRow("INSERT INTO orders (idOrders, partType, quantity) "
-                                               + "VALUES (" + String.valueOf(id) + ", '" + s + "', "
-                                               + cart.get(s) + ")");
+                            beanAccess.updateRow("INSERT INTO orders (idOrders, date, refClient, partType, quantity) "
+                                               + "VALUES (" + String.valueOf(id) +", '" + nowDate.toString() + "', " + refClient
+                                               + ", '" + s + "', " + cart.get(s) + ")");
                         }
                     }
                 }
