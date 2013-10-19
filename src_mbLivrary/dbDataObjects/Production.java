@@ -10,7 +10,8 @@ import java.util.Date;
 public class Production implements Serializable{
     private Integer id;
     private Date date;
-    private PartsType partsType;
+    private int refPart;
+    private int refOrder;
     private Integer quantity;
     private Integer defectivePartsQuantity;
     
@@ -22,14 +23,15 @@ public class Production implements Serializable{
     
     @Override
     public String toString(){
-        return (quantity.toString() + "*" + partsType.toString() + " on " + date.toString()
+        return (quantity.toString() + "*" + String.valueOf(refPart) + " on " + date.toString()
                 + " with " + defectivePartsQuantity.toString() + " defective parts");
     }
         
-    public Production(Date date, PartsType partsType,
+    public Production(Date date, int refOrder, int refPart,
             int quantity){
         this.date = date;
-        this.partsType = partsType;
+        this.refOrder = refOrder;
+        this.refPart = refPart;
         this.quantity = quantity;
         this.defectivePartsQuantity = 0;
     }
@@ -42,7 +44,11 @@ public class Production implements Serializable{
         return defectivePartsQuantity;
     }
     
-    public String getIdParts() {
-        return partsType.getType();
+    public int getRefPart() {
+        return this.refPart;
+    }
+    
+    public int getRefOrder() {
+        return this.refOrder;
     }
 }

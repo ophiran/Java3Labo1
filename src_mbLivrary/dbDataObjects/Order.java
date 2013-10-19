@@ -13,11 +13,9 @@ public class Order implements Serializable{
     private int refClient;
     private PartsType partsType;
     private int quantity;
-    private static int orderNumber = 0;
     
-    public Order(Date date, int refClient, PartsType partsType, int quantity){
-        orderNumber++;
-        this.id = orderNumber;
+    public Order(int id, Date date, int refClient, PartsType partsType, int quantity){
+        this.id = id;
         this.date = date;
         this.refClient = refClient;
         this.partsType = partsType;
@@ -30,6 +28,18 @@ public class Order implements Serializable{
     
     public int getQuantity(){
         return this.quantity;
+    }
+    
+    public Date getDate() {
+        return this.date;
+    }
+    
+    public int getRefClient() {
+        return this.refClient;
+    }
+    
+    public int getIdOrder() {
+        return this.id;
     }
     
 }

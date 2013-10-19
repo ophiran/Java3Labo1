@@ -44,10 +44,7 @@ public class MysqlDbAccess implements DbAccess, Serializable{
         Statement instruction = connection.createStatement();
         instruction.executeUpdate(query);
     }
-    
-    public synchronized void commit() throws SQLException {
-        connection.commit();
-    }
+   
         
     @Override
     protected void finalize() throws Throwable {

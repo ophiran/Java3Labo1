@@ -41,11 +41,13 @@ public class ThreadWorking extends Thread{
                 ObjectInputStream ois = new ObjectInputStream(input);
                 Order newOrder = (Order)ois.readObject();
                 System.out.println("Working on a new set of parts");
-                Production newProduction = new Production(new Date(),accessContainer.getInfoParts(newOrder.getType()).getPartType(), newOrder.getQuantity());
+                Part partToBuild = accessContainer.getInfoParts(newOrder.getType());
+                Production newProduction = new Production(new Date(), newOrder.getIdOrder(), partToBuild.getIdPart(),  
+                        newOrder.getQuantity());
                 
                 for(int i = 0; i < newOrder.getQuantity(); i++){
-                    System.out.println("Estimated time : " + newOrder.getType().getBaseTime()/1000 + "s");
-                    sleep(newOrder.getType().getBaseTime());
+                    System.out.println("Estimated time : " + partToBuild.getfabricationTime()/1000.0 + "s");
+                    sleep(partToBuild.getfabricationTime());
                     if(Math.random() > (1 - defectivePercentage)){
                         newProduction.addDefectPart();
                     }

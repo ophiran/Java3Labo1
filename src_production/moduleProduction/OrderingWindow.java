@@ -34,9 +34,11 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
     ThreadWorking threadWorking;
     ThreadStore threadStore;
     ThreadOrder threadOrder;
+    ContainerAccess dbAccess;
     
     public OrderingWindow() {
         initComponents();
+        dbAccess = ContainerAccess.getInstance();
         orderButton.addActionListener(this);
         quitButton.addActionListener(this);
         comboBoxType.setModel(new DefaultComboBoxModel(PartsType.values()));
@@ -68,25 +70,24 @@ public class OrderingWindow extends javax.swing.JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(quitButton)){
-            
-            
-            
             threadWorking.terminate();
             threadStore.terminate();
             threadOrder.terminate();
-            
-            
+
             this.dispose();
         }
         else if(e.getSource().equals(orderButton)){
             try{
                 ContainerAccess db = ContainerAccess.getInstance();
                 TreeSet<String> clientsList = db.getClientsLogin();
-                ObjectOutputStream oos = new ObjectOutputStream(posWindow);
                 if(clientsList.contains(clientLoginTf.getText())){
+                    ObjectOutputStream oos = new ObjectOutputStream(posWindow);
                     Client customer = db.getClient(clientLoginTf.getText());
-                    oos.writeObject(new Order(new Date(), customer.getId(),
-                        (PartsType)comboBoxType.getSelectedItem(), Integer.parseInt(textFieldQuantity.getText())));
+                    int lastProdOrderId = dbAccess.getLastProdOrderId();
+                    Order newOrder = new Order(lastProdOrderId + 1, new Date(), customer.getId(),
+                        (PartsType)comboBoxType.getSelectedItem(), Integer.parseInt(textFieldQuantity.getText()));
+                    oos.writeObject(newOrder);
+                    dbAccess.sendProductionOrder(newOrder);
                     System.out.println("A new order has been sent");
 
                 } else {

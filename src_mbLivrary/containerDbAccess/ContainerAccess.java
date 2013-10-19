@@ -4,9 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
 import java.util.TreeSet;
+import java.sql.Date;
 
 import dbAccessObjects.MysqlDbAccess;
 import dbDataObjects.Client;
+import dbDataObjects.Order;
 import dbDataObjects.Part;
 import dbDataObjects.PartsType;
 import dbDataObjects.Production;
@@ -36,12 +38,23 @@ public class ContainerAccess{
     	return containerReference;
     }
     
+    public synchronized int getLastProdOrderId() {
+        try {
+            ResultSet rs = beanAccess.sendQuery("SELECT MAX(idProductionOrders) FROM productionOrders");
+            rs.next();
+            
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
     public synchronized Part getInfoParts(PartsType type) {
         try {
             ResultSet rs = beanAccess.sendQuery("select * from parts where label = '" + type.getType() + "'");
             rs.next();
             
-            return new Part(type, rs.getInt("fabricationTime"), rs.getString("dimensions"), rs.getFloat("productionCost"));
+            return new Part(rs.getInt("idParts"), type, rs.getInt("fabricationTime"), rs.getString("dimensions"), rs.getFloat("productionCost"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -54,13 +67,36 @@ public class ContainerAccess{
             ResultSet rs = beanAccess.sendQuery("SELECT MAX(idProductions) FROM production");
             rs.next();
             prodId = rs.getInt(1) + 1;
-            beanAccess.insertRow("INSERT INTO production VALUES (" + prodId + ",'" +
-            production.getIdParts() + "'," + production.getQuantity() + "," + production.getDefectivePartsQuantity() + ")");
+            
+            rs = beanAccess.sendQuery("SELECT label FROM parts WHERE idParts=" + production.getRefPart());
+            rs.next();
+            String label = rs.getString("label");
+            beanAccess.insertRow("INSERT INTO production (idProductions, refOrder, refPart, quantity, defectQuantity) "
+                               + "VALUES (" + prodId + ", " + String.valueOf(production.getRefOrder()) + ", "
+                               + String.valueOf(production.getRefPart()) + ", " + String.valueOf(production.getQuantity()) 
+                               + ", " + String.valueOf(production.getDefectivePartsQuantity()) + ")");
+            beanAccess.updateRow("UPDATE parts SET quantity=quantity+" + String.valueOf(production.getQuantity())
+                               + " WHERE label='" + label + "'");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
+    public synchronized void sendProductionOrder(Order order){
+        try {
+            int id;
+            ResultSet rs = beanAccess.sendQuery("SELECT MAX(idProductionOrders) FROM productionOrders");
+            rs.next();
+            id = rs.getInt(1) + 1;
+            Date nowDate = new Date(order.getDate().getTime());
+            beanAccess.insertRow("INSERT INTO productionOrders (idProductionOrders, date, refClient, partType, quantity) "
+                               + "VALUES (" + id + ",'" + nowDate.toString() + "'," + order.getRefClient() + ",'"
+                               + order.getType() + "', " + order.getQuantity() + ")");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public synchronized TreeSet<String> getClientsLogin() {
     	try {
     		TreeSet<String> clientsList = new TreeSet<String>(); 
