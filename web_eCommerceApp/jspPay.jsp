@@ -5,11 +5,16 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<% Object login = session.getAttribute("login.isDone");
+   if(login == null){
+       response.sendRedirect("login.html");
+   }
+%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Payement page</title>
+        <title>Payment page</title>
     </head>
     <body>
         <h1>Click to pay and exit your session </h1>

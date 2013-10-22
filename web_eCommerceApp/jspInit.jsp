@@ -10,10 +10,17 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Empty your cart</title>
+        <title>MetalBuilding</title>
     </head>
     <body>
-        <h1> Click to empty your cart </h1>
+        <h1> Make a choice </h1>
+        <% Object login = session.getAttribute("login.isDone");
+           if(login != null){
+                out.println("Hello dear " + (String)login);
+           } else {
+               response.sendRedirect("login.html");
+           }
+        %>
         <form method="POST" action="ServletControl">
             <input type="hidden" name="action" value="toContest"/>
             <input type="submit" value="Take part in our contest"/>

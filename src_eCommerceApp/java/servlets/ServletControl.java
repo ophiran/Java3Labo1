@@ -9,16 +9,14 @@ import dbAccessObjects.MysqlDbAccess;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import javax.servlet.http.HttpUtils;
 
 /**
  *
@@ -70,13 +68,13 @@ public class ServletControl extends HttpServlet implements HttpSessionListener{
             }
             cart = new TreeMap<String, Integer>();
             session.setAttribute("cart", cart);
-            response.sendRedirect("jspCaddie.jsp");
+            reloadCart(request, response);
         }
         if(request.getParameter("action").equals("newOrder")) {
             try {
                 TreeMap<String, Integer> cart = (TreeMap<String, Integer>) session.getAttribute("cart");
                 if(cart != null) {
-                    response.setContentType("text/html");
+                    response.setContentType("text/html;charset=UTF-8");
                     out = response.getWriter();
 
                     Enumeration<String> parametersList = request.getParameterNames();
@@ -94,7 +92,7 @@ public class ServletControl extends HttpServlet implements HttpSessionListener{
                                                + " WHERE label='" + parameter + "'");
                         }
                     }while(parametersList.hasMoreElements());
-                    response.sendRedirect("jspCaddie.jsp");
+                    reloadCart(request, response);
                 }
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -106,7 +104,7 @@ public class ServletControl extends HttpServlet implements HttpSessionListener{
            response.sendRedirect("jspPay.jsp");
        }
        if(request.getParameter("action").equals("toCaddie")) {
-           response.sendRedirect("jspCaddie.jsp");
+           reloadCart(request, response);
        }
        if(request.getParameter("action").equals("toContest")) {
            response.sendRedirect("contest.html");
@@ -144,7 +142,16 @@ public class ServletControl extends HttpServlet implements HttpSessionListener{
             }
        }
     }
-    
+    private void reloadCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+                ResultSet rs = beanAccess.sendQuery("SELECT label, productionCost, quantity FROM parts");
+                request.setAttribute("stock", rs);
+                RequestDispatcher reqDispatcher = getServletConfig().getServletContext().getRequestDispatcher("/jspCaddie.jsp");
+                reqDispatcher.forward(request,response);
+            } catch (SQLException ex) {
+                Logger.getLogger(ServletControl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
     private void emptyCart(TreeMap<String, Integer> cart) {
         try {
                 MysqlDbAccess beanAccess2 = new MysqlDbAccess();
@@ -162,7 +169,6 @@ public class ServletControl extends HttpServlet implements HttpSessionListener{
     
     @Override
     public void sessionCreated(HttpSessionEvent se) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

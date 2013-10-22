@@ -8,8 +8,11 @@
 <%@page import="java.util.TreeMap"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.sql.*"%>
-<jsp:useBean id="dbConnection" scope="page" class="dbAccessObjects.MysqlDbAccess" />
-
+<% Object login = session.getAttribute("login.isDone");
+   if(login == null){
+       response.sendRedirect("login.html");
+   }
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -29,12 +32,11 @@
                     </tr>
                 </thead>
                 <tbody>
-            <% dbConnection.startConnection("//127.0.0.1:3306/mydb", "root", ""); 
-               ResultSet rs = dbConnection.sendQuery("SELECT label, productionCost, quantity FROM parts");
-               while (rs.next()) {
-                   float price = Float.parseFloat(rs.getString("productionCost")) + 1;
-                   String label = rs.getString("label");
-                   int maxQuantity = rs.getInt("quantity");
+            <%  ResultSet rs = (ResultSet)request.getAttribute("stock");
+                while (rs.next()) {
+                    float price = Float.parseFloat(rs.getString("productionCost")) + 1;
+                    String label = rs.getString("label");
+                    int maxQuantity = rs.getInt("quantity");
                %>
                   <tr>
                     <td><%=label%></td>
