@@ -110,7 +110,7 @@ public class ServletControl extends HttpServlet implements HttpSessionListener{
                         try {
                             rs = beanAccess.sendQuery("SELECT productionCost FROM parts WHERE label='" + s + "'");
                             rs.next();
-                            totalPrice += ((rs.getDouble("productionCost")*cartOrder.get(s)) + 1);
+                            totalPrice += ((rs.getDouble("productionCost") + 1)*cartOrder.get(s));
                         } catch (SQLException ex) {
                             Logger.getLogger(ServletControl.class.getName()).log(Level.SEVERE, null, ex);
                         }
