@@ -33,10 +33,11 @@
                 </thead>
                 <tbody>
             <%  ResultSet rs = (ResultSet)request.getAttribute("stock");
-                while (rs.next()) {
-                    float price = Float.parseFloat(rs.getString("productionCost")) + 1;
-                    String label = rs.getString("label");
-                    int maxQuantity = rs.getInt("quantity");
+                if (rs != null) {
+                    while (rs.next()) {
+                        float price = Float.parseFloat(rs.getString("productionCost")) + 1;
+                        String label = rs.getString("label");
+                        int maxQuantity = rs.getInt("quantity");
                %>
                   <tr>
                     <td><%=label%></td>
@@ -46,7 +47,8 @@
                     </td>
                   </tr>
                <%
-               }
+                    }
+                }
                %>
                 </tbody>
             </table>
