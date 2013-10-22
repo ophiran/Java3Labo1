@@ -61,7 +61,7 @@ public class ServletControl extends HttpServlet implements HttpSessionListener{
             return;
         }
         if(request.getParameter("action").equals("authorize")) {
-            response.sendRedirect("welcome.html");
+            response.sendRedirect("jspInit.html");
         }
         if(request.getParameter("action").equals("newCart")) {
             TreeMap<String, Integer> cart = (TreeMap<String, Integer>) session.getAttribute("cart");
@@ -104,6 +104,12 @@ public class ServletControl extends HttpServlet implements HttpSessionListener{
         }
        if(request.getParameter("action").equals("toPay")) {
            response.sendRedirect("jspPay.jsp");
+       }
+       if(request.getParameter("action").equals("toCaddie")) {
+           response.sendRedirect("jspCaddie.jsp");
+       }
+       if(request.getParameter("action").equals("toContest")) {
+           response.sendRedirect("contest.html");
        }
        if(request.getParameter("action").equals("pay")) {
             try {

@@ -65,7 +65,7 @@ public class ServletLogin extends HttpServlet {
                     session.setAttribute("login.isDone", request.getParameter("login"));
                     TreeMap<String, Integer> cart = new TreeMap<String, Integer>();
                     session.setAttribute("cart", cart);
-                    response.sendRedirect("welcome.html");
+                    response.sendRedirect("jspInit.jsp");
                 } else {
                     response.sendRedirect("errorLogin.html");
                 }

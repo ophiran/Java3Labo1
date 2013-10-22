@@ -15,8 +15,16 @@
     <body>
         <h1> Click to empty your cart </h1>
         <form method="POST" action="ServletControl">
-            <input type="hidden" name="action" value="newCart"/>
-            <input type="submit" value="Empty"/>
+            <input type="hidden" name="action" value="toContest"/>
+            <input type="submit" value="Take part in our contest"/>
+        </form>
+        <form method="POST" action="ServletControl">
+            <input type="hidden" name="action" value="toCaddie"/>
+            <input type="submit" value="Start shopping"/>
+        </form>
+        <form method="POST" action="ServletControl">
+            <input type="hidden" name="action" value="toPay"/>
+            <input type="submit" value="Pay and log out"/>
         </form>
     </body>
 </html>

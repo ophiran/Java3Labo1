@@ -109,9 +109,8 @@ public class AppletContest extends javax.swing.JApplet implements ActionListener
                 int port = currentPage.getPort();
                 String protocol = currentPage.getProtocol();
                 String host = currentPage.getHost();
-                String pageUrl = "/eCommerceApp/welcome.html";
+                String pageUrl = "/eCommerceApp/jspInit.jsp";
                 getAppletContext().showDocument(new URL(protocol, host, port, pageUrl));
-                // TODO better url
             } catch (MalformedURLException ex) {
                 Logger.getLogger(AppletContest.class.getName()).log(Level.SEVERE, null, ex);
             }
