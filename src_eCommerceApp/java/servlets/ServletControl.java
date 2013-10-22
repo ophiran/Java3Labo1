@@ -101,7 +101,26 @@ public class ServletControl extends HttpServlet implements HttpSessionListener{
             }
         }
        if(request.getParameter("action").equals("toPay")) {
-           response.sendRedirect("jspPay.jsp");
+           double totalPrice = 0;
+           ResultSet rs;
+           TreeMap<String, Integer> cartOrder = (TreeMap<String, Integer>) session.getAttribute("cart");
+            if(cartOrder != null) {
+                for(String s: cartOrder.keySet()) {
+                    if(cartOrder.get(s) > 0) {
+                        try {
+                            rs = beanAccess.sendQuery("SELECT productionCost FROM parts WHERE label='" + s + "'");
+                            rs.next();
+                            totalPrice += ((rs.getDouble("productionCost")*cartOrder.get(s)) + 1);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ServletControl.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+            request.setAttribute("total", totalPrice);
+            RequestDispatcher reqDispatcher = getServletConfig().getServletContext().getRequestDispatcher("/jspPay.jsp");
+            reqDispatcher.forward(request,response);
+           //response.sendRedirect("jspPay.jsp");
        }
        if(request.getParameter("action").equals("toCaddie")) {
            reloadCart(request, response);

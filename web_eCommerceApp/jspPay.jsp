@@ -9,6 +9,7 @@
    if(login == null){
        response.sendRedirect("login.html");
    }
+   Double totalPrice = (Double)request.getAttribute("total");
 %>
 <!DOCTYPE html>
 <html>
@@ -18,6 +19,7 @@
     </head>
     <body>
         <h1>Click to pay and exit your session </h1>
+        <h2> You have to pay <%=String.valueOf(totalPrice)%> € </h2>
         <form method="POST" action="ServletControl">
             <input type="hidden" name="action" value="pay"/>
             <input type="submit" name="Pay and quit"value="Pay"/>
