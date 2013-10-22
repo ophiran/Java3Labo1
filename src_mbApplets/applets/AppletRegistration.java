@@ -12,6 +12,7 @@ import java.net.URLEncoder;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -68,20 +69,24 @@ public class AppletRegistration extends javax.swing.JApplet implements ActionLis
         String protocol = currentPage.getProtocol();
         String host = currentPage.getHost();
         if(e.getSource().equals(registerButton)){
-            try {
-                
-                String infos = "?lastname=" + URLEncoder.encode(lastNameTf.getText(), "UTF-8") + "&firstname=" + URLEncoder.encode(firstNameTf.getText(), "UTF-8") +
-                        "&login=" + URLEncoder.encode(loginTf.getText(), "UTF-8") + "&password=" + URLEncoder.encode(passwordTf.getText(), "UTF-8") +
-                        "&address=" + URLEncoder.encode(addressTf.getText(), "UTF-8") + "&phonenumber=" + URLEncoder.encode(phoneNumberTf.getText(), "UTF-8")+
-                        "&email=" + URLEncoder.encode(emailTf.getText(), "UTF-8");
-                String typeInfo = "&action=signUp";
-                String servletAddress = "/eCommerceApp/ServletLogin" + infos+typeInfo;
-                URL servletUrl = new URL(protocol, host, port, servletAddress);
-                
-                getAppletContext().showDocument(servletUrl);
+            if (!passwordTf.getText().equals(confirmPasswordTf.getText())) {
+                JOptionPane.showMessageDialog(this, "Your passwords do not match");
+            } else {
+                try {
 
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
+                    String infos = "?lastname=" + URLEncoder.encode(lastNameTf.getText(), "UTF-8") + "&firstname=" + URLEncoder.encode(firstNameTf.getText(), "UTF-8") +
+                            "&login=" + URLEncoder.encode(loginTf.getText(), "UTF-8") + "&password=" + URLEncoder.encode(passwordTf.getText(), "UTF-8") +
+                            "&address=" + URLEncoder.encode(addressTf.getText(), "UTF-8") + "&phonenumber=" + URLEncoder.encode(phoneNumberTf.getText(), "UTF-8")+
+                            "&email=" + URLEncoder.encode(emailTf.getText(), "UTF-8");
+                    String typeInfo = "&action=signUp";
+                    String servletAddress = "/eCommerceApp/ServletLogin" + infos+typeInfo;
+                    URL servletUrl = new URL(protocol, host, port, servletAddress);
+
+                    getAppletContext().showDocument(servletUrl);
+
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
             }
         }
         if(e.getSource().equals(cancelButton)){

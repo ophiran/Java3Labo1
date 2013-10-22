@@ -16,14 +16,41 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 import javax.servlet.http.HttpUtils;
 
 /**
  *
  * @author mike
  */
-public class ServletControl extends HttpServlet {
-    PrintWriter out;
+public class ServletControl extends HttpServlet implements HttpSessionListener{
+    private PrintWriter out;
+    private MysqlDbAccess beanAccess;
+    
+    @Override
+    public void init() {
+        try {
+            beanAccess = new MysqlDbAccess();
+            beanAccess.startConnection("//127.0.0.1:3306/mydb", "root", "");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    @Override
+    public void destroy() {
+        if (beanAccess != null) {
+            try {
+                beanAccess.stopConnection();
+            } catch (SQLException ex) {
+                Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException{
         HttpSession session = request.getSession(true);
@@ -52,8 +79,6 @@ public class ServletControl extends HttpServlet {
                     response.setContentType("text/html");
                     out = response.getWriter();
 
-                    MysqlDbAccess beanAccess = new MysqlDbAccess();
-                    beanAccess.startConnection("//127.0.0.1:3306/mydb", "root", "");
                     Enumeration<String> parametersList = request.getParameterNames();
                     do {
                         String parameter = parametersList.nextElement();
@@ -71,8 +96,6 @@ public class ServletControl extends HttpServlet {
                     }while(parametersList.hasMoreElements());
                     response.sendRedirect("jspCaddie.jsp");
                 }
-            } catch (ClassNotFoundException ex) {
-                ex.printStackTrace();
             } catch (SQLException ex) {
                 ex.printStackTrace();
                 out.println("ERROR SQL");
@@ -87,8 +110,6 @@ public class ServletControl extends HttpServlet {
                 TreeMap<String, Integer> cart = (TreeMap<String, Integer>) session.getAttribute("cart");
                 if(cart != null) {
                     java.sql.Date nowDate = new java.sql.Date(new java.util.Date().getTime());
-                    MysqlDbAccess beanAccess = new MysqlDbAccess();
-                    beanAccess.startConnection("//127.0.0.1:3306/mydb", "root", "");
                     ResultSet rs = beanAccess.sendQuery("SELECT MAX(idOrders) FROM orders");
                     ResultSet rsClientId = beanAccess.sendQuery("SELECT idClients FROM clients WHERE login='" + session.getAttribute("login.isDone") + "'");
                     rsClientId.next();
@@ -108,34 +129,22 @@ public class ServletControl extends HttpServlet {
                         }
                     }
                 }
+                session.setAttribute("cart", null);
                 session.invalidate();
                 response.sendRedirect("index.html");
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(ServletControl.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
                 out.println(ex.getMessage());
                 Logger.getLogger(ServletControl.class.getName()).log(Level.SEVERE, null, ex);
             }
        }
     }
-        
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-            processRequest(request, response);      
-	}
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-        
-            processRequest(request, response);
-	}
-        
-        private void emptyCart(TreeMap<String, Integer> cart) {
-            try {
-                MysqlDbAccess beanAccess = new MysqlDbAccess();
-                beanAccess.startConnection("//127.0.0.1:3306/mydb", "root", "");
+    
+    private void emptyCart(TreeMap<String, Integer> cart) {
+        try {
+                MysqlDbAccess beanAccess2 = new MysqlDbAccess();
+                beanAccess2.startConnection("//127.0.0.1:3306/mydb", "root", "");
                 for(String s: cart.keySet()) {
-                    beanAccess.updateRow("UPDATE parts SET quantity=quantity+" + String.valueOf(cart.get(s))
+                    beanAccess2.updateRow("UPDATE parts SET quantity=quantity+" + String.valueOf(cart.get(s))
                                                + " WHERE label='" + s + "'");
                 }
             } catch (ClassNotFoundException ex) {
@@ -143,5 +152,32 @@ public class ServletControl extends HttpServlet {
             } catch (SQLException ex) {
                 Logger.getLogger(ServletControl.class.getName()).log(Level.SEVERE, null, ex);
             }
+    }
+    
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+        TreeMap<String, Integer> cart = (TreeMap<String, Integer>) se.getSession().getAttribute("cart");
+        if(cart != null) {
+            emptyCart(cart);
         }
+    }
+        
+	
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                    throws ServletException, IOException {
+        processRequest(request, response);      
+    }
+    
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+                    throws ServletException, IOException {
+
+        processRequest(request, response);
+    }
+        
+
 }

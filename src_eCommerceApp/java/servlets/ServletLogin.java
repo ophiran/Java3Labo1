@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
 
@@ -20,8 +21,33 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet(name = "ServletLogin", urlPatterns = {"/ServletLogin"})
 public class ServletLogin extends HttpServlet {
-    PrintWriter out;
+    private PrintWriter out;
     private static final Logger logger = Logger.getGlobal();
+    private MysqlDbAccess beanAccess;
+    
+    @Override
+    public void init() {
+        try {
+            beanAccess = new MysqlDbAccess();
+            beanAccess.startConnection("//127.0.0.1:3306/mydb", "root", "");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    @Override
+    public void destroy() {
+        if (beanAccess != null) {
+            try {
+                beanAccess.stopConnection();
+            } catch (SQLException ex) {
+                Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException{
         logger.info("Entering Get");
@@ -29,9 +55,6 @@ public class ServletLogin extends HttpServlet {
             try {
                 response.setContentType("text/html");
                 out = response.getWriter();
-
-                MysqlDbAccess beanAccess = new MysqlDbAccess();
-                beanAccess.startConnection("//127.0.0.1:3306/mydb", "root", "");
 
                 ResultSet rs = beanAccess.sendQuery("SELECT login, password "
                                                         + "FROM clients "
@@ -46,9 +69,6 @@ public class ServletLogin extends HttpServlet {
                 } else {
                     response.sendRedirect("errorLogin.html");
                 }
-
-            } catch (ClassNotFoundException ex) {
-                ex.printStackTrace();
             } catch (SQLException ex) {
                 ex.printStackTrace();
                 out.println(ex.getMessage());
@@ -59,9 +79,6 @@ public class ServletLogin extends HttpServlet {
             try {
                 response.setContentType("text/html");
                 out = response.getWriter();
-
-                MysqlDbAccess beanAccess = new MysqlDbAccess();
-                beanAccess.startConnection("//127.0.0.1:3306/mydb", "root", "");
                 
                 ResultSet rsId = beanAccess.sendQuery("SELECT MAX(idClients) FROM clients");
                 int id;
@@ -78,12 +95,13 @@ public class ServletLogin extends HttpServlet {
                     response.sendRedirect("registration.html");
                 }
                 else {
-                    beanAccess.insertRow("INSERT INTO clients (idClients, firstName, login, lastName, address, phoneNumber, email, password) " + "VALUES (" + id + ", '" + request.getParameter("firstname") + "','"+ request.getParameter("login") + "','"+ request.getParameter("lastname") + "','" + request.getParameter("address") + "','"+ request.getParameter("phonenumber") + "','" + request.getParameter("email") + "','"+ request.getParameter("password") + "')");
+                    beanAccess.insertRow("INSERT INTO clients (idClients, firstName, login, lastName, address, phoneNumber, email, password) "
+                                       + "VALUES (" + id + ", '" + request.getParameter("firstname") + "','"+ request.getParameter("login")
+                                       + "','"+ request.getParameter("lastname") + "','" + request.getParameter("address") + "','"+ request.getParameter("phonenumber")
+                                       + "','" + request.getParameter("email") + "','"+ request.getParameter("password") + "')");
                     response.sendRedirect("login.html");
                 }
                 
-            } catch (ClassNotFoundException ex) {
-                ex.printStackTrace();
             } catch (SQLException ex) {
                 ex.printStackTrace();
                 out.println(ex.getMessage());
