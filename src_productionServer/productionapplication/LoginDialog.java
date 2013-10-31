@@ -38,20 +38,11 @@ public class LoginDialog extends javax.swing.JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(loginButton)) {
-            
-
             try {
-                ObjectOutputStream oos = new ObjectOutputStream(parent.socket.getOutputStream());
-                ObjectInputStream ois = new ObjectInputStream(parent.socket.getInputStream());
-
                 LoginRequest req = new LoginRequest(loginTf.getText(), passwordTf.getText());
-
-                oos.writeObject(req);
-                //oos.close();    WHY ?
+                parent.oos.writeObject(req);
                 
-                
-                
-                Object resp = ois.readObject();
+                Object resp = parent.ois.readObject();
                 if (resp instanceof LoginResponse) {
                     LoginResponse response = (LoginResponse) resp;
                     if (response.ack == true) {

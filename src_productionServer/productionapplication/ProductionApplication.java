@@ -7,6 +7,8 @@ package productionapplication;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
@@ -20,6 +22,8 @@ public class ProductionApplication extends javax.swing.JFrame implements ActionL
     
     public boolean clientIsLogged = false;
     public Socket socket;
+    public ObjectOutputStream oos;
+    public ObjectInputStream ois;
     /**
      * Creates new form ProductionApplication
      */
@@ -39,6 +43,8 @@ public class ProductionApplication extends javax.swing.JFrame implements ActionL
         if (e.getSource().equals(connectMenuItem)) {
             try {
                 socket = new Socket("127.0.0.1", 50000);
+                oos = new ObjectOutputStream(socket.getOutputStream());
+                ois = new ObjectInputStream(socket.getInputStream());
             }
             catch (UnknownHostException uhe) { 
                 System.err.println("Error, could not find host [" + uhe + "]"); 
@@ -49,6 +55,8 @@ public class ProductionApplication extends javax.swing.JFrame implements ActionL
         }
         if (e.getSource().equals(disconnectMenuItem)) {
             try {
+                oos.close();
+                ois.close();
                 socket.close();
             } catch (IOException ex) {
                 Logger.getLogger(ProductionApplication.class.getName()).log(Level.SEVERE, null, ex);
