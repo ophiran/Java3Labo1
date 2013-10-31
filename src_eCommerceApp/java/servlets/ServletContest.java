@@ -6,10 +6,12 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -33,9 +35,9 @@ public class ServletContest extends HttpServlet {
         PrintWriter out = response.getWriter();
         Double rand = Math.random();
         if (rand > 0.2) {
-            out.println("You lost !" + rand.toString());
+            out.println("You lost !");
         } else {
-            out.println("You won !" + rand.toString());
+            out.println("You won !");
         }
         out.close();
         

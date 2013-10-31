@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author mike
  */
-@WebServlet(name = "ServletLogin", urlPatterns = {"/ServletLogin"})
+//@WebServlet(name = "ServletLogin", urlPatterns = {"/ServletLogin"})
 public class ServletLogin extends HttpServlet {
     private PrintWriter out;
     private static final Logger logger = Logger.getGlobal();
