@@ -8,7 +8,7 @@ public class Client {
     private int idClients;
     private String lastName;
     private String firstName;
-    private String login;
+    public String login;
     private String password;
     private String address;
     private String phoneNumber;
@@ -38,12 +38,17 @@ public class Client {
     
     public boolean isAuthorized() {
     	ContainerAccess db = ContainerAccess.getInstance();
+        /*
     	Set<String> clientLists = db.getClientsLogin();
     	if (clientLists.contains(this.login)) {
     		return true;
     	} else {
     		return false;
     	}
+        */
+        return db.clientAuthorized(login, password);
     }
+    
+    
 
 }

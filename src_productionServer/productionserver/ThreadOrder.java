@@ -1,12 +1,10 @@
 package productionserver;
 
-import dbDataObjects.Order;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import static java.lang.Thread.sleep;
 
 public class ThreadOrder extends Thread{
 	
@@ -33,7 +31,7 @@ public class ThreadOrder extends Thread{
                 ObjectInputStream ois = new ObjectInputStream(input);
 
                 oos.writeObject(ois.readObject());
-                System.out.println("New order received");
+                System.out.println("ThreadOrder > New order received");
             } catch(IOException ioe) {
 
             } catch(ClassNotFoundException cnfe){

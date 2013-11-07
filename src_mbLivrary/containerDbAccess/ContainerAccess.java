@@ -2,7 +2,6 @@ package containerDbAccess;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Set;
 import java.util.TreeSet;
 import java.sql.Date;
 
@@ -117,8 +116,8 @@ public class ContainerAccess{
                 Client client = null;
     		if(rs.next()) {
     			client = new Client(rs.getString("lastName"), rs.getString("firstName"), 
-    								rs.getString("login"), rs.getString("password"), rs.getString("address"), 
-    								rs.getString("phoneNumber"), rs.getString("email"));
+                                            rs.getString("login"), rs.getString("password"), rs.getString("address"), 
+                                            rs.getString("phoneNumber"), rs.getString("email"));
     		}
     		return client;
     	} catch (SQLException e) {
@@ -131,8 +130,9 @@ public class ContainerAccess{
         try {
             ResultSet rs = beanAccess.sendQuery("SELECT login, password "
                                                 + "FROM Clients "
-                                                + "WHERE login = " + login
-                                                + " AND password = " + password);
+                                                + "WHERE login = '" + login
+                                                + "' AND password = '" + password
+                                                + "'");
             return rs.next();
     	} catch (SQLException e) {
     		e.printStackTrace();

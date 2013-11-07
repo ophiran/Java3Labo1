@@ -4,6 +4,7 @@
  */
 package productionapplication;
 
+import dbDataObjects.PartsType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -11,8 +12,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import productionLib.OrderRequest;
 
 /**
  *
@@ -29,6 +33,7 @@ public class ProductionApplication extends javax.swing.JFrame implements ActionL
      */
     public ProductionApplication() {
         initComponents();
+        partsTypeCb.setModel(new DefaultComboBoxModel(PartsType.values()));
         connectMenuItem.addActionListener(this);
         disconnectMenuItem.addActionListener(this);
         loginMenuItem.addActionListener(this);
@@ -68,11 +73,26 @@ public class ProductionApplication extends javax.swing.JFrame implements ActionL
         }
         
         if (e.getSource().equals(quitMenuItem)) {
-            this.dispose();
+            try {
+                oos.close();
+                ois.close();
+                socket.close();
+                this.dispose();
+            } catch (IOException ex) {
+                Logger.getLogger(ProductionApplication.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
         if (clientIsLogged) {
-            
+            if (e.getSource().equals(orderButtton)) {
+                try {
+                    OrderRequest req = new OrderRequest((PartsType) partsTypeCb.getSelectedItem(), 
+                            Integer.parseInt(quantityTf.getText()), new Date());
+                    oos.writeObject(req);
+                } catch (IOException ex) {
+                    Logger.getLogger(ProductionApplication.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 

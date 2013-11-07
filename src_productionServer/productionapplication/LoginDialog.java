@@ -7,13 +7,8 @@ package productionapplication;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import productionLib.LoginRequest;
 import productionLib.LoginResponse;
@@ -48,7 +43,7 @@ public class LoginDialog extends javax.swing.JDialog implements ActionListener {
                     if (response.ack == true) {
                         parent.clientIsLogged = true;
                     } else {
-                        JOptionPane.showMessageDialog(this.getParent(), "Unknown login and password");
+                        JOptionPane.showMessageDialog(this.getParent(), response.cause);
                     }
                 }
                 this.dispose();
