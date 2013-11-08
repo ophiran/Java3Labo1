@@ -29,11 +29,12 @@ public class ThreadStore extends Thread{
             try {
                 ObjectInputStream ois = new ObjectInputStream(input);
                 Production product = (Production)ois.readObject();
-                System.out.println("ThreadStore > Storing a production in BD");
+                ServerLog.write("ThreadStore > Storing a production in BD");
                 accessContainer.sendProductionInfo(product);
-                System.out.println("ThreadStore > Finished storing");
+                ServerLog.write("ThreadStore > Finished storing");
                 
             } catch (IOException ioe) {
+                //ioe.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

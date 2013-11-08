@@ -40,20 +40,20 @@ public class ThreadWorking extends Thread{
                 ObjectOutputStream oos = new ObjectOutputStream(output);
                 ObjectInputStream ois = new ObjectInputStream(input);
                 Order newOrder = (Order)ois.readObject();
-                System.out.println("ThreadWorking > Working on a new set of parts");
+                ServerLog.write("ThreadWorking > Working on a new set of parts");
                 Part partToBuild = accessContainer.getInfoParts(newOrder.getType());
                 Production newProduction = new Production(new Date(), newOrder.getIdOrder(), partToBuild.getIdPart(),  
                         newOrder.getQuantity());
                 
                 for(int i = 0; i < newOrder.getQuantity(); i++){
-                    System.out.println("ThreadWorking > Estimated time : " + partToBuild.getfabricationTime()/1000.0 + "s");
+                    ServerLog.write("ThreadWorking > Estimated time : " + partToBuild.getfabricationTime()/1000.0 + "s");
                     sleep(partToBuild.getfabricationTime());
                     if(Math.random() > (1 - defectivePercentage)){
                         newProduction.addDefectPart();
                     }
                 }
                 
-                System.out.println("ThreadWorking > Finished working");
+                ServerLog.write("ThreadWorking > Finished working");
                 oos.writeObject(newProduction);
             } catch(IOException ioe) {
 

@@ -31,7 +31,7 @@ public class ThreadOrder extends Thread{
                 ObjectInputStream ois = new ObjectInputStream(input);
 
                 oos.writeObject(ois.readObject());
-                System.out.println("ThreadOrder > New order received");
+                ServerLog.write("ThreadOrder > New order received");
             } catch(IOException ioe) {
 
             } catch(ClassNotFoundException cnfe){

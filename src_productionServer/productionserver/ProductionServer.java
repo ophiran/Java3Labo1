@@ -11,7 +11,6 @@ import java.io.PipedOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import productionLib.CancelRequest;
@@ -24,25 +23,25 @@ import productionLib.Response;
  *
  * @author mike
  */
-public class ProductionServer {
-    static Socket clientSocket;
-    static ServerSocket servSocket;
-    static boolean mustStop = false;
+public class ProductionServer extends Thread{
+    private Socket clientSocket;
+    private ServerSocket servSocket;
+    private volatile boolean mustStop = false;
+    private int serverPort;
     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
+    public ProductionServer(int port) {
+        this.serverPort = port;
+    }    
+    @Override
+    public void run() {
         Client clientLogin = null;
-        PipedOutputStream posWindow = null;
-        ThreadWorking threadWorking;
-        ThreadStore threadStore;
-        ThreadOrder threadOrder;
-        ContainerAccess dbAccess;
-        dbAccess = ContainerAccess.getInstance();
+        ThreadWorking threadWorking = null;
+        ThreadStore threadStore = null;
+        ThreadOrder threadOrder = null;
+        ContainerAccess dbAccess = ContainerAccess.getInstance();
         
         PipedInputStream pisWorking, pisStore, pisOrder;
-        PipedOutputStream posWorking, posOrder;
+        PipedOutputStream posWorking, posOrder, posWindow = null;
         
         try{
             pisWorking = new PipedInputStream();
@@ -60,12 +59,12 @@ public class ProductionServer {
             threadStore.start();
         }
         catch (IOException e){
-            
+            System.err.println("Failed to start threads");
         }
         
         try {
-            servSocket = new ServerSocket(50000);
-            System.out.println("ProductionServer > Server running");
+            servSocket = new ServerSocket(serverPort);
+            ServerLog.write("ProductionServer > Server running");
         } catch(SocketException se) {
             System.err.println("Error creating serverSocket");
         } catch(IOException e) {
@@ -74,11 +73,11 @@ public class ProductionServer {
         
         while (!mustStop) {
             try {
-                System.out.println("ProductionServer > Waiting for a client");
+                ServerLog.write("ProductionServer > Waiting for a client");
                 clientSocket = servSocket.accept();
-                System.out.println("ProductionServer > Client connected");
+                ServerLog.write("ProductionServer > Client connected");
             } catch(SocketException se) {
-                System.err.println("Error creating serverSocket");
+                //System.err.println("Error creating serverSocket");
             } catch(IOException e) {
                 System.err.println("Error creating serverSocket");
             }
@@ -89,17 +88,18 @@ public class ProductionServer {
                     ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
                     while(clientSocket.isConnected()) {
                         Object req = ois.readObject();
-                        System.out.println("ProductionServer > Request received from the client");
+                        ServerLog.write("ProductionServer > Request received from the client");
                         if (req instanceof LoginRequest) {
                             LoginRequest request = (LoginRequest) req;
                             clientLogin = new Client(request.login, request.password);
                             if (clientLogin.isAuthorized()) {
                                 Response resp = new LoginResponse(true, null);
                                 oos.writeObject(resp);
+                                ServerLog.write("ProductionServer > Client " + request.login + " logged");
                             } else {
                                 Response resp = new LoginResponse(false, "Wrond id");
                                 oos.writeObject(resp);
-                                // TODO add closing the connection
+                                clientSocket.close();
                             }
                         } else if (req instanceof OrderRequest) {
                             OrderRequest request = (OrderRequest) req;
@@ -108,15 +108,14 @@ public class ProductionServer {
                                 ObjectOutputStream toPipe = new ObjectOutputStream(posWindow);
                                 Client customer = db.getClient(clientLogin.login);
                                 int lastProdOrderId = dbAccess.getLastProdOrderId();
-                                Order newOrder = new Order(lastProdOrderId + 1, new Date(), customer.getId(),
+                                Order newOrder = new Order(lastProdOrderId + 1, request.desiredDate, customer.getId(),
                                     request.partsType, request.quantity);
                                 toPipe.writeObject(newOrder);
                                 dbAccess.sendProductionOrder(newOrder);
-                                System.out.println("ProductionServer > A new order has been sent");
+                                ServerLog.write("ProductionServer > A new order has been sent");
 
                             } else {
-                                //JOptionPane.showMessageDialog(this, "Unknown client, please register via the web application");
-                                System.out.println("ProductionServer > Unknown client");
+                                ServerLog.write("ProductionServer > Unknown client");
                             }
                         } else if (req instanceof CancelRequest) {
                             CancelRequest request = (CancelRequest) req;
@@ -125,16 +124,47 @@ public class ProductionServer {
                     }
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(ProductionServer.class.getName()).log(Level.SEVERE, null, ex);
-
-
+                } catch (SocketException se) {
+                    ServerLog.write("ProductionServer > Server socket closed");
                 } catch (IOException e) {
-                    //e.printStackTrace();
-                    System.out.println("ProductionServer > Client disconnected");
+                    ServerLog.write("ProductionServer > Client disconnected");
                 }
             }
         }
         if (mustStop) {
-            // TODO shutdown production threads
+            ServerLog.write("ProductionServer > Stopping...");
+            try {
+                posWindow.close();
+                if (threadOrder != null) {
+                    threadOrder.terminate();
+                    threadOrder.join();
+                }
+                if (threadWorking != null) {
+                        threadWorking.terminate();
+                        threadWorking.join();
+                }
+                if (threadStore != null) {
+                    threadStore.terminate();
+                    threadStore.join();
+                }
+                ServerLog.write("ProductionServer > Stopped");
+
+            } catch (InterruptedException ex) {
+                    Logger.getLogger(ProductionServer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(ProductionServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
+    
+    public synchronized void terminate() {
+        try {
+            servSocket.close();
+            clientSocket.close();
+            mustStop = true;
+        } catch (IOException ex) {
+            Logger.getLogger(ProductionServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
 }
