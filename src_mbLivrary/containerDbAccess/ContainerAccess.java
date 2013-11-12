@@ -11,6 +11,9 @@ import dbDataObjects.Order;
 import dbDataObjects.Part;
 import dbDataObjects.PartsType;
 import dbDataObjects.Production;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ContainerAccess{
     
@@ -96,6 +99,26 @@ public class ContainerAccess{
             e.printStackTrace();
         }
     }
+    
+    public synchronized Order getOrderToTreat() {
+        Order orderToTreat = null;
+        try {
+            ResultSet rs = beanAccess.sendQuery("SELECT * FROM  productionorders"
+                                              + "WHERE NOT treated"
+                                              + " ORDER BY  date ASC");
+            if(rs.next()) {
+                orderToTreat = new Order(rs.getInt("idProductionOrders")
+                                            , new java.util.Date(rs.getDate("date").getTime())
+                                            , rs.getInt("refClient")
+                                            , PartsType.valueOf(rs.getString("partType"))
+                                            , rs.getInt("quantity"), rs.getBoolean("treated"));
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ContainerAccess.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orderToTreat;
+    }
     public synchronized TreeSet<String> getClientsLogin() {
     	try {
     		TreeSet<String> clientsList = new TreeSet<String>(); 
@@ -115,7 +138,7 @@ public class ContainerAccess{
     		ResultSet rs = beanAccess.sendQuery("SELECT * FROM Clients WHERE login='" + login + "'");
                 Client client = null;
     		if(rs.next()) {
-    			client = new Client(rs.getString("lastName"), rs.getString("firstName"), 
+    			client = new Client(rs.getInt("idClients"), rs.getString("lastName"), rs.getString("firstName"), 
                                             rs.getString("login"), rs.getString("password"), rs.getString("address"), 
                                             rs.getString("phoneNumber"), rs.getString("email"));
     		}

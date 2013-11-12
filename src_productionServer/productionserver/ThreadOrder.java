@@ -1,5 +1,7 @@
 package productionserver;
 
+import containerDbAccess.ContainerAccess;
+import dbDataObjects.Order;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -11,11 +13,13 @@ public class ThreadOrder extends Thread{
     private OutputStream output;
     private InputStream input;
     private volatile boolean mustStop = false;
+    private ContainerAccess dbAccess;
 
 
     public ThreadOrder(InputStream source,OutputStream target) {
         output = target;
         input = source;
+        dbAccess = ContainerAccess.getInstance();
     }
 
     public void terminate(){
@@ -26,11 +30,12 @@ public class ThreadOrder extends Thread{
     public void run() {
         while(!mustStop) {
             try {
-                
+                // TODO orders should be treated even when no new order is received
                 ObjectOutputStream oos = new ObjectOutputStream(output);
                 ObjectInputStream ois = new ObjectInputStream(input);
 
-                oos.writeObject(ois.readObject());
+                dbAccess.sendProductionOrder((Order) ois.readObject()); 
+                oos.writeObject(dbAccess.getOrderToTreat());
                 ServerLog.write("ThreadOrder > New order received");
             } catch(IOException ioe) {
 

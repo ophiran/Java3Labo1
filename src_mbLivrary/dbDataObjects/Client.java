@@ -19,14 +19,15 @@ public class Client {
     }
     
     public Client(String login) {
-    	this("", "", login, "", "", "", "");
+    	this(0,"", "", login, "", "", "", "");
     }
     public Client(String login, String password) {
-    	this("", "", login, password, "", "", "");
+    	this(0,"", "", login, password, "", "", "");
     }
 
-    public Client(String lastName, String firstName, String login, String password,
-                String address, String phoneNumber, String email){
+    public Client(int id, String lastName, String firstName, String login, 
+            String password, String address, String phoneNumber, String email) {
+        this.idClients = id;
         this.lastName = lastName;
         this.firstName = firstName;
         this.login = login;
