@@ -79,6 +79,8 @@ public class ContainerAccess{
                                + ", " + String.valueOf(production.getDefectivePartsQuantity()) + ")");
             beanAccess.updateRow("UPDATE parts SET quantity=quantity+" + String.valueOf(production.getQuantity())
                                + " WHERE label='" + label + "'");
+            beanAccess.updateRow("UPDATE productionOrders SET treated = 1 WHERE idProductionOrders= "
+                               + String.valueOf(production.getRefOrder()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -91,9 +93,9 @@ public class ContainerAccess{
             rs.next();
             id = rs.getInt(1) + 1;
             Date nowDate = new Date(order.getDate().getTime());
-            beanAccess.insertRow("INSERT INTO productionOrders (idProductionOrders, date, refClient, partType, quantity) "
+            beanAccess.insertRow("INSERT INTO productionOrders (idProductionOrders, date, refClient, partType, quantity, treated) "
                                + "VALUES (" + id + ",'" + nowDate.toString() + "'," + order.getRefClient() + ",'"
-                               + order.getType() + "', " + order.getQuantity() + ")");
+                               + order.getType() + "', " + order.getQuantity() + ", 0" + ")");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -104,8 +106,8 @@ public class ContainerAccess{
         Order orderToTreat = null;
         try {
             ResultSet rs = beanAccess.sendQuery("SELECT * FROM  productionorders"
-                                              + "WHERE NOT treated"
-                                              + " ORDER BY  date ASC");
+                                              + " WHERE treated = 0"
+                                              + " ORDER BY date ASC");
             if(rs.next()) {
                 orderToTreat = new Order(rs.getInt("idProductionOrders")
                                             , new java.util.Date(rs.getDate("date").getTime())

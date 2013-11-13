@@ -110,8 +110,8 @@ public class ProductionServer extends Thread{
                                 int lastProdOrderId = dbAccess.getLastProdOrderId();
                                 Order newOrder = new Order(lastProdOrderId + 1, request.desiredDate, customer.getId(),
                                     request.partsType, request.quantity, false);
-                                toPipe.writeObject(newOrder);
-                                //dbAccess.sendProductionOrder(newOrder); --> moved to ThreadOrder
+                                //toPipe.writeObject(newOrder);
+                                dbAccess.sendProductionOrder(newOrder);
                                 ServerLog.write("ProductionServer > A new order has been sent");
 
                             } else {

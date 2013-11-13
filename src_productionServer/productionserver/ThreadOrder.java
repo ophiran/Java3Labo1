@@ -4,9 +4,13 @@ import containerDbAccess.ContainerAccess;
 import dbDataObjects.Order;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ThreadOrder extends Thread{
 	
@@ -32,15 +36,24 @@ public class ThreadOrder extends Thread{
             try {
                 // TODO orders should be treated even when no new order is received
                 ObjectOutputStream oos = new ObjectOutputStream(output);
-                ObjectInputStream ois = new ObjectInputStream(input);
-
-                dbAccess.sendProductionOrder((Order) ois.readObject()); 
-                oos.writeObject(dbAccess.getOrderToTreat());
-                ServerLog.write("ThreadOrder > New order received");
+                //ObjectInputStream ois = new ObjectInputStream(input);
+                Order order = (Order) dbAccess.getOrderToTreat();
+                
+                if (order != null) {
+                    Calendar orderDate = Calendar.getInstance();
+                    Calendar today = Calendar.getInstance();
+                    orderDate.setTime(order.getDate());
+                    today.setTime(new Date());
+                    if (orderDate.before(today) || orderDate.equals(today)) {
+                        oos.writeObject(order);
+                        ServerLog.write("ThreadOrder > New order received");
+                    }
+                }
+                this.sleep(500);
             } catch(IOException ioe) {
-
-            } catch(ClassNotFoundException cnfe){
-
+                Logger.getLogger(ThreadOrder.class.getName()).log(Level.SEVERE, "error", ioe);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ThreadOrder.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
