@@ -45,6 +45,7 @@ public class ThreadOrder extends Thread{
                     today.setTime(new Date());
                     if (orderDate.before(today) || orderDate.equals(today)) {
                         oos.writeObject(order);
+                        oos.flush();
                         ServerLog.write("ThreadOrder > New order sent to production");
                     }
                 }
