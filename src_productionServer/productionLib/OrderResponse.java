@@ -8,21 +8,23 @@ package productionLib;
  *
  * @author mike
  */
-public class LoginResponse implements Response{
+public class OrderResponse implements Response{
     public boolean ack;
     public String cause;
+    public int orderId;
     
-    public LoginResponse(boolean ack, String cause) {
+    public OrderResponse(boolean ack, String cause, int orderId) {
         this.ack = ack;
         this.cause = cause;
+        this.orderId = orderId;
     }
     
     public String networkString() {
         String toRet;
         if (ack) {
-            toRet = "login#1#\r\n";
+            toRet = "ordelem#1#" + String.valueOf(orderId) + "\r\n";
         } else {
-            toRet = "login#0#" + this.cause + "\r\n";
+            toRet = "ordelem#0#" + this.cause + "\r\n";
         }
         
         return toRet;

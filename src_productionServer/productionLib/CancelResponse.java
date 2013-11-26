@@ -8,11 +8,11 @@ package productionLib;
  *
  * @author mike
  */
-public class LoginResponse implements Response{
+public class CancelResponse implements Response{
     public boolean ack;
     public String cause;
     
-    public LoginResponse(boolean ack, String cause) {
+    public CancelResponse(boolean ack, String cause) {
         this.ack = ack;
         this.cause = cause;
     }

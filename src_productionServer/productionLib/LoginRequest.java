@@ -16,4 +16,10 @@ public class LoginRequest implements Request{
         this.login = login;
         this.password = password;
     }
+    
+    public LoginRequest(String data) {
+        String vectStr[] = data.split("#");
+        this.login = vectStr[1];
+        this.password = vectStr[2];
+    }
 }

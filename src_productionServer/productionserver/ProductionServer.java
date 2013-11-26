@@ -101,7 +101,7 @@ public class ProductionServer extends Thread{
                                 oos.writeObject(resp);
                                 ServerLog.write("ProductionServer > Client " + request.login + " logged");
                             } else {
-                                Response resp = new LoginResponse(false, "Wrond id");
+                                Response resp = new LoginResponse(false, "Wrong id");
                                 oos.writeObject(resp);
                                 clientSocket.close();
                             }
@@ -109,7 +109,7 @@ public class ProductionServer extends Thread{
                             OrderRequest request = (OrderRequest) req;
                             if(clientLogin != null){
                                 ContainerAccess db = ContainerAccess.getInstance();
-                                ObjectOutputStream toPipe = new ObjectOutputStream(posWindow);
+                                //ObjectOutputStream toPipe = new ObjectOutputStream(posWindow);
                                 Client customer = db.getClient(clientLogin.login);
                                 int lastProdOrderId = dbAccess.getLastProdOrderId();
                                 Order newOrder = new Order(lastProdOrderId + 1, request.desiredDate, customer.getId(),

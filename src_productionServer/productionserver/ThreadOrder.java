@@ -34,9 +34,8 @@ public class ThreadOrder extends Thread{
     public void run() {
         while(!mustStop) {
             try {
-                // TODO orders should be treated even when no new order is received
                 ObjectOutputStream oos = new ObjectOutputStream(output);
-                //ObjectInputStream ois = new ObjectInputStream(input);
+
                 Order order = (Order) dbAccess.getOrderToTreat();
                 
                 if (order != null) {
@@ -46,7 +45,7 @@ public class ThreadOrder extends Thread{
                     today.setTime(new Date());
                     if (orderDate.before(today) || orderDate.equals(today)) {
                         oos.writeObject(order);
-                        ServerLog.write("ThreadOrder > New order received");
+                        ServerLog.write("ThreadOrder > New order sent to production");
                     }
                 }
                 this.sleep(500);

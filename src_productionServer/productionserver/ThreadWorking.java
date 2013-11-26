@@ -36,7 +36,6 @@ public class ThreadWorking extends Thread{
     public void run() {
         while(!mustStop) {
             try {
-                
                 ObjectOutputStream oos = new ObjectOutputStream(output);
                 ObjectInputStream ois = new ObjectInputStream(input);
                 Order newOrder = (Order)ois.readObject();

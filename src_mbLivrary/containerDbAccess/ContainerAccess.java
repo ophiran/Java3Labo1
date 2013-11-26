@@ -79,8 +79,8 @@ public class ContainerAccess{
                                + ", " + String.valueOf(production.getDefectivePartsQuantity()) + ")");
             beanAccess.updateRow("UPDATE parts SET quantity=quantity+" + String.valueOf(production.getQuantity())
                                + " WHERE label='" + label + "'");
-            beanAccess.updateRow("UPDATE productionOrders SET treated = 1 WHERE idProductionOrders= "
-                               + String.valueOf(production.getRefOrder()));
+            //beanAccess.updateRow("UPDATE productionOrders SET treated = 1 WHERE idProductionOrders= "
+            //                   + String.valueOf(production.getRefOrder()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -114,6 +114,8 @@ public class ContainerAccess{
                                             , rs.getInt("refClient")
                                             , PartsType.valueOf(rs.getString("partType"))
                                             , rs.getInt("quantity"), rs.getBoolean("treated"));
+                beanAccess.updateRow("UPDATE productionOrders SET treated = 1 WHERE idProductionOrders= "
+                               + String.valueOf(rs.getInt("idProductionOrders")));
             }
             
         } catch (SQLException ex) {
