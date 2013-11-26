@@ -28,6 +28,7 @@ public class ProductionServer extends Thread{
     private ServerSocket servSocket;
     private volatile boolean mustStop = false;
     private int serverPort;
+    private PipedOutputStream posWindow = null;
     
     public ProductionServer(int port) {
         this.serverPort = port;
@@ -38,10 +39,11 @@ public class ProductionServer extends Thread{
         ThreadWorking threadWorking = null;
         ThreadStore threadStore = null;
         ThreadOrder threadOrder = null;
+        ThreadReception threadReception = null;
         ContainerAccess dbAccess = ContainerAccess.getInstance();
         
         PipedInputStream pisWorking, pisStore, pisOrder;
-        PipedOutputStream posWorking, posOrder, posWindow = null;
+        PipedOutputStream posWorking, posOrder;
         
         try{
             pisWorking = new PipedInputStream();
@@ -54,9 +56,11 @@ public class ProductionServer extends Thread{
             threadOrder = new ThreadOrder(pisOrder, posOrder);
             threadWorking = new ThreadWorking(pisWorking, posWorking);
             threadStore = new ThreadStore(pisStore);
+            threadReception = new ThreadReception();
             threadOrder.start();
             threadWorking.start();
             threadStore.start();
+            threadReception.start();
         }
         catch (IOException e){
             System.err.println("Failed to start threads");
@@ -139,14 +143,22 @@ public class ProductionServer extends Thread{
                     threadOrder.terminate();
                     threadOrder.join();
                 }
+                ServerLog.write("ProductionServer > ThreadOrder stopped");
                 if (threadWorking != null) {
                         threadWorking.terminate();
                         threadWorking.join();
                 }
+                ServerLog.write("ProductionServer > ThreadWorking stopped...");
                 if (threadStore != null) {
                     threadStore.terminate();
                     threadStore.join();
                 }
+                ServerLog.write("ProductionServer > ThreadStore stopped...");
+                if (threadReception != null) {
+                    threadReception.terminate();
+                    threadReception.join();
+                }
+                ServerLog.write("ProductionServer > ThreadReception stopped...");
                 ServerLog.write("ProductionServer > Stopped");
 
             } catch (InterruptedException ex) {
@@ -159,8 +171,12 @@ public class ProductionServer extends Thread{
     
     public synchronized void terminate() {
         try {
-            servSocket.close();
-            clientSocket.close();
+            if (servSocket != null)
+                servSocket.close();
+            if (clientSocket != null)
+                clientSocket.close();
+            servSocket = null;
+            clientSocket = null;
             mustStop = true;
         } catch (IOException ex) {
             Logger.getLogger(ProductionServer.class.getName()).log(Level.SEVERE, null, ex);
