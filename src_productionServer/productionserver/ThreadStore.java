@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 
 import containerDbAccess.ContainerAccess;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ThreadStore extends Thread{
 	
@@ -25,18 +27,30 @@ public class ThreadStore extends Thread{
 
     @Override
     public void run() {
-        while(!mustStop) {
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(input);
+            while(!mustStop) {
+                try {
+                    
+                    Production product = (Production)ois.readObject();
+                    ServerLog.write("ThreadStore > Storing a production in BD");
+                    accessContainer.sendProductionInfo(product);
+                    ServerLog.write("ThreadStore > Finished storing");
+                    
+                } catch (IOException ioe) {
+                    //ioe.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ThreadStore.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
             try {
-                ObjectInputStream ois = new ObjectInputStream(input);
-                Production product = (Production)ois.readObject();
-                ServerLog.write("ThreadStore > Storing a production in BD");
-                accessContainer.sendProductionInfo(product);
-                ServerLog.write("ThreadStore > Finished storing");
-                
-            } catch (IOException ioe) {
-                //ioe.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                ois.close();
+            } catch (IOException ex) {
+                Logger.getLogger(ThreadStore.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

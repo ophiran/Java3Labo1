@@ -24,6 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import productionLib.CancelRequest;
+import productionLib.CancelResponse;
 import productionLib.OrderRequest;
 import productionserver.ServerLauncher;
 
@@ -134,6 +136,25 @@ public class ProductionApplication extends javax.swing.JFrame implements ActionL
                 } catch (ParseException ex) {
                     JOptionPane.showMessageDialog(this, "Please enter a date in the format jj/mm/aaaa");
                     
+                }
+            }
+            if (e.getSource().equals(cancelButton)) {
+                try {
+                    String orderStr = (String)JOptionPane.showInputDialog(this,
+                                    "Enter the order Id", "Cancel an order", JOptionPane.QUESTION_MESSAGE,
+                                     null, null, "");
+                    CancelRequest req = new CancelRequest(Integer.parseInt(orderStr));
+                    oos.writeObject(req);
+                    CancelResponse resp = (CancelResponse) ois.readObject();
+                    if (resp.ack) {
+                        System.out.println("Order canceled");
+                    } else {
+                        System.out.println("Cancel failed: " + resp.cause);
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(ProductionApplication.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(ProductionApplication.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

@@ -106,7 +106,7 @@ public class ContainerAccess{
         Order orderToTreat = null;
         try {
             ResultSet rs = beanAccess.sendQuery("SELECT * FROM  productionorders"
-                                              + " WHERE treated = 0"
+                                              + " WHERE treated = 0 AND date <= CURDATE()"
                                               + " ORDER BY date ASC");
             if(rs.next()) {
                 orderToTreat = new Order(rs.getInt("idProductionOrders")
@@ -122,6 +122,25 @@ public class ContainerAccess{
             Logger.getLogger(ContainerAccess.class.getName()).log(Level.SEVERE, null, ex);
         }
         return orderToTreat;
+    }
+    
+    public synchronized boolean cancelOrder(int orderId) {
+        try {
+                beanAccess.updateRow("DELETE FROM productionOrders WHERE idProductionOrders= "
+                               + String.valueOf(orderId) + " AND treated = 0");
+                ResultSet rs = beanAccess.sendQuery("SELECT * FROM  productionorders"
+                                              + " WHERE idProductionOrders = "
+                                              + String.valueOf(orderId));
+                if(rs.next()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ContainerAccess.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
     public synchronized TreeSet<String> getClientsLogin() {
     	try {

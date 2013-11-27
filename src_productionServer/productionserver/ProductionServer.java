@@ -14,6 +14,7 @@ import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import productionLib.CancelRequest;
+import productionLib.CancelResponse;
 import productionLib.LoginRequest;
 import productionLib.LoginResponse;
 import productionLib.OrderRequest;
@@ -123,7 +124,14 @@ public class ProductionServer extends Thread{
                             }
                         } else if (req instanceof CancelRequest) {
                             CancelRequest request = (CancelRequest) req;
-                            System.out.println(request.OrderId);
+                            CancelResponse resp = null;
+                            ServerLog.write("Trying to cancel order " + request.OrderId);
+                            if (dbAccess.cancelOrder(request.OrderId)) {
+                                resp = new CancelResponse(true, "");
+                            } else {
+                                resp = new CancelResponse(false, "Could not cancel this order");
+                            }
+                            oos.writeObject(resp);
                         }
                     }
                 } catch (ClassNotFoundException ex) {

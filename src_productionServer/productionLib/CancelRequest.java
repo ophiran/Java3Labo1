@@ -14,4 +14,9 @@ public class CancelRequest implements Request {
     public CancelRequest(int OrderId) {
         this.OrderId = OrderId;
     }
+    
+    public CancelRequest(String data) {
+        String vectStr[] = data.split("#");
+        this.OrderId = Integer.parseInt(vectStr[1]);
+    }
 }

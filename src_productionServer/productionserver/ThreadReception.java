@@ -17,6 +17,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import productionLib.CancelRequest;
+import productionLib.CancelResponse;
 import productionLib.LoginRequest;
 import productionLib.LoginResponse;
 import productionLib.OrderRequest;
@@ -135,10 +137,15 @@ public class ThreadReception extends Thread{
                             }
                             
                         } else if (vectStr[0].equals("canorder")) {
-                            /*
-                            CancelRequest request = (CancelRequest) req;
-                            System.out.println(request.OrderId);
-                            */
+                            CancelRequest request = new CancelRequest(data);
+                            CancelResponse resp = null;
+                            if (dbAccess.cancelOrder(request.OrderId)) {
+                                resp = new CancelResponse(true, "");
+                            } else {
+                                resp = new CancelResponse(false, "Could not cancel this order");
+                            }
+                            dos.write(resp.networkString().getBytes());
+                            
                         }
                         endingEncountered = false;
                     }

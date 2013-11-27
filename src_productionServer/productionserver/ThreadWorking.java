@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.util.Date;
 
 import containerDbAccess.ContainerAccess;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ThreadWorking extends Thread{
 	
@@ -34,32 +36,46 @@ public class ThreadWorking extends Thread{
 
     @Override
     public void run() {
-        while(!mustStop) {
-            try {
-                ObjectOutputStream oos = new ObjectOutputStream(output);
-                ObjectInputStream ois = new ObjectInputStream(input);
-                Order newOrder = (Order)ois.readObject();
-                ServerLog.write("ThreadWorking > Working on a new set of parts");
-                Part partToBuild = accessContainer.getInfoParts(newOrder.getType());
-                Production newProduction = new Production(new Date(), newOrder.getIdOrder(), partToBuild.getIdPart(),  
-                        newOrder.getQuantity());
-                
-                for(int i = 0; i < newOrder.getQuantity(); i++){
-                    ServerLog.write("ThreadWorking > Estimated time : " + partToBuild.getfabricationTime()/1000.0 + "s");
-                    sleep(partToBuild.getfabricationTime());
-                    if(Math.random() > (1 - defectivePercentage)){
-                        newProduction.addDefectPart();
+        ObjectOutputStream oos = null;
+        ObjectInputStream ois = null;
+        try {
+            oos = new ObjectOutputStream(output);
+            ois = new ObjectInputStream(input);
+            while(!mustStop) {
+                try {
+                    
+                    Order newOrder = (Order)ois.readObject();
+                    ServerLog.write("ThreadWorking > Working on a new set of parts");
+                    Part partToBuild = accessContainer.getInfoParts(newOrder.getType());
+                    Production newProduction = new Production(new Date(), newOrder.getIdOrder(), partToBuild.getIdPart(),  
+                            newOrder.getQuantity());
+                    
+                    for(int i = 0; i < newOrder.getQuantity(); i++){
+                        ServerLog.write("ThreadWorking > Estimated time : " + partToBuild.getfabricationTime()/1000.0 + "s");
+                        sleep(partToBuild.getfabricationTime());
+                        if(Math.random() > (1 - defectivePercentage)){
+                            newProduction.addDefectPart();
+                        }
                     }
+                    
+                    ServerLog.write("ThreadWorking > Finished working");
+                    oos.writeObject(newProduction);
+                } catch(IOException ioe) {
+                    ioe.printStackTrace();
+                } catch(InterruptedException ie){
+                    mustStop = true;
+                } catch(ClassNotFoundException cnfe){
+
                 }
-                
-                ServerLog.write("ThreadWorking > Finished working");
-                oos.writeObject(newProduction);
-            } catch(IOException ioe) {
-
-            } catch(InterruptedException ie){
-                mustStop = true;
-            } catch(ClassNotFoundException cnfe){
-
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ThreadWorking.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                oos.close();
+                ois.close();
+            } catch (IOException ex) {
+                Logger.getLogger(ThreadWorking.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
