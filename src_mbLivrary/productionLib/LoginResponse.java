@@ -17,6 +17,16 @@ public class LoginResponse implements Response{
         this.cause = cause;
     }
     
+    public LoginResponse(String data) {
+        String vectStr[] = data.split("#");
+        if (vectStr[1].equals("1")) {
+            this.ack = true;
+        } else {
+            this.ack = false;
+            this.cause = vectStr[2];
+        }
+    }
+    
     public String networkString() {
         String toRet;
         if (ack) {

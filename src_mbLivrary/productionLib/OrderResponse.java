@@ -4,6 +4,12 @@
  */
 package productionLib;
 
+import dbDataObjects.PartsType;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author mike
@@ -18,6 +24,18 @@ public class OrderResponse implements Response{
         this.cause = cause;
         this.orderId = orderId;
     }
+    
+    public OrderResponse(String data) {
+        String vectStr[] = data.split("#");
+        if (vectStr[1].equals("1")) {
+            this.ack = true;
+            this.orderId = Integer.parseInt(vectStr[2]);
+        } else {
+            this.ack = false;
+            this.cause = vectStr[2];
+        }
+    }
+    
     
     public String networkString() {
         String toRet;

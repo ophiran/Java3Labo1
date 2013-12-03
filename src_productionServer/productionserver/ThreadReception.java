@@ -120,7 +120,7 @@ public class ThreadReception extends Thread{
                             OrderRequest request = new OrderRequest(data);
                             ServerLog.write("ProductionServerOrder > Order of " + request.quantity + " " + request.partsType
                                             + " for " + request.desiredDate);
-                            if(clientLogin != null){
+                            if(this.clientLogin != null){
                                 ContainerAccess db = ContainerAccess.getInstance();
                                 Client customer = db.getClient(clientLogin.login);
                                 int lastProdOrderId = dbAccess.getLastProdOrderId();
@@ -158,4 +158,5 @@ public class ThreadReception extends Thread{
             }
         }
     }
+    
 }

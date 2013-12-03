@@ -63,8 +63,11 @@ public class ServletLogin extends HttpServlet {
                 if( rs.next()) {
                     HttpSession session = request.getSession(true);
                     session.setAttribute("login.isDone", request.getParameter("login"));
-                    TreeMap<String, Integer> cart = new TreeMap<String, Integer>();
-                    session.setAttribute("cart", cart);
+                    session.setAttribute("login.pass", request.getParameter("password"));
+                    TreeMap<String, Integer> cartStock = new TreeMap<String, Integer>();
+                    session.setAttribute("cartStock", cartStock);
+                    TreeMap<String, Integer> cartOrders = new TreeMap<String, Integer>();
+                    session.setAttribute("cartOrders", cartOrders);
                     response.sendRedirect("jspInit.jsp");
                 } else {
                     response.sendRedirect("errorLogin.html");

@@ -61,7 +61,7 @@ public class ThreadWorking extends Thread{
                     ServerLog.write("ThreadWorking > Finished working");
                     oos.writeObject(newProduction);
                 } catch(IOException ioe) {
-                    ioe.printStackTrace();
+                    //ioe.printStackTrace();
                 } catch(InterruptedException ie){
                     mustStop = true;
                 } catch(ClassNotFoundException cnfe){

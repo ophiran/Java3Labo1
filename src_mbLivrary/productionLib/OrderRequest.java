@@ -38,4 +38,12 @@ public class OrderRequest implements Request {
             Logger.getLogger(OrderRequest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public String networkString() {
+        String toRet;
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = df.format(this.desiredDate);
+        toRet = "ordelem#" + this.partsType + "#" + String.valueOf(this.quantity) + "#" + dateStr + "\r\n";
+        return toRet;
+    }
 }

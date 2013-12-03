@@ -29,6 +29,7 @@
                         <td>Part type</td>
                         <td>Price</td>
                         <td>Quantity</td>
+                        <td>Stock</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,8 +44,9 @@
                     <td><%=label%></td>
                     <td><%=String.valueOf(price)%> €</td>
                     <td>
-                        <input type="number" name="<%=label%>" min='0' max='<%=maxQuantity%>'/>
+                        <input type="number" name="<%=label%>" min='0'/>
                     </td>
+                    <td><%=maxQuantity%></td>
                   </tr>
                <%
                     }

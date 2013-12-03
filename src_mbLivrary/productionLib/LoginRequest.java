@@ -22,4 +22,11 @@ public class LoginRequest implements Request{
         this.login = vectStr[1];
         this.password = vectStr[2];
     }
+    
+    public String networkString() {
+        String toRet;
+        toRet = "login#" + this.login + "#" + this.password + "\r\n";
+        return toRet;
+    }
+    
 }
