@@ -185,6 +185,60 @@ public class ContainerAccess{
     		return false;
     	}
     }
+    
+    public synchronized void sendReport(String location, int hours, int minutes, 
+            int seconds, int type, String description, boolean resolved) {
+        try {
+            int id;
+            ResultSet rs = beanAccess.sendQuery("SELECT MAX(id) FROM report");
+            rs.next();
+            id = rs.getInt(1) + 1;
+            String bitResolved;
+            if (resolved) {
+                bitResolved = "1";
+            } else {
+                bitResolved = "0";
+            }
+            beanAccess.insertRow("INSERT INTO report (id, location, hours, minutes, seconds, type, description, resolved) "
+                               + "VALUES (" + id + ",'" + location + "'," + String.valueOf(hours) + ", " + String.valueOf(minutes)
+                               + ", " + String.valueOf(seconds) + ", " + String.valueOf(type) + ", '" + description + "', " 
+                               + bitResolved + ")");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public synchronized void sendEmergency(String location, int hours, int minutes, 
+            int seconds, int type, int numberPeople) {
+        try {
+            int id;
+            ResultSet rs = beanAccess.sendQuery("SELECT MAX(id) FROM emergency");
+            rs.next();
+            id = rs.getInt(1) + 1;
+            beanAccess.insertRow("INSERT INTO emergency (id, location, hours, minutes, seconds, type, numberPeople) "
+                               + "VALUES (" + id + ",'" + location + "'," + String.valueOf(hours) + ", " + String.valueOf(minutes)
+                               + ", " + String.valueOf(seconds) + ", " + String.valueOf(type) + ", " + String.valueOf(numberPeople) + ")");
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public synchronized String getPassword(String login) {
+        try {
+    		ResultSet rs = beanAccess.sendQuery("SELECT password FROM Clients WHERE login='" + login + "'");
+                String password = "";
+    		if(rs.next()) {
+    			password = rs.getString("password");
+    		}
+    		return password;
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    		return null;
+    	}
+    }
 
     
     
